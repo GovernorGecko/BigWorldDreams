@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-rawpy = "*"
-imageio = "*"
-black = "*"
+noise = "*"
+flake8 = "*"
+pillow = "*"
 
 [dev-packages]
 
