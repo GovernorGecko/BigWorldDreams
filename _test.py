@@ -49,7 +49,7 @@ class MyApp(ShowBase):
         ShowBase.__init__(self)
 
         # Load the environment model.
-        self.scene = self.loader.loadModel("assets/box.gltf")
+        self.scene = self.loader.loadModel("assets/triangle.gltf")
         # Reparent the model to render.
         self.scene.reparentTo(self.render)
         # Apply scale and position transforms on the model.

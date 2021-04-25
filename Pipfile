@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 noise = "*"
 flake8 = "*"
-pillow = "*"
 panda3d = "*"
 panda3d-gltf = "*"
 
