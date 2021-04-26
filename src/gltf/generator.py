@@ -48,21 +48,26 @@ class Generator:
         """
         Returns the GLTF Json in its current state.
         """
-        return f"{self.__json} {self.__indices} {self.__attributes}"
+        return f"{self.build()}"
 
     def add_attribute_sequence(self, attribute_values):
         """
         Adds a sequence of attribute values, based on
         the order of attributes we have.  This is handled
         in a single iteration of the order.
+
+        Args:
+            attribute_values: a List or Tuple of floats
+            that define the GL object.
+
         For example, if you have POSITION, NORMAL in your order
         this method expects 6 Floats and won't go farther.
         """
         if type(attribute_values) not in (list, tuple):
             raise ValueError('Expected attribute values to be list or tuple.')
 
-        # Current attribute value
-        current = 0
+        # Starting attribute value
+        start = 0
 
         # Attribute Dict, we build to compare
         # against existing dicts.
@@ -78,16 +83,19 @@ class Generator:
             floats_expected = self.__attribute_types[attribute_type]
 
             # Expected attribute values end
-            end = current + floats_expected
+            end = start + floats_expected
 
             # We have enough floats?
             if end > len(attribute_values):
                 raise ValueError("Not enough Floats for attributes!")
 
             # Iterate our range
-            for position in range(current, end):
+            for position in range(start, end):
                 attribute_value = attribute_values[position]
                 attribute_dict[attribute_type].append(attribute_value)
+
+            # Increment start
+            start = end
 
         # This attribute dict not already exist?
         if attribute_dict not in self.__attributes:
@@ -95,3 +103,35 @@ class Generator:
             self.__indices.append(len(self.__indices))
         else:
             self.__indices.append(self.__attributes.index(attribute_dict))
+
+    def build(self):
+        """
+        Builds and returns our GLTF Json
+        Scenes
+        Nodes
+        Meshes
+        Accessors
+        BufferViews
+        Buffers
+        """
+        json = {
+            "scene": 0,
+            "scenes": [
+                {
+                    "nodes": [
+                        0
+                    ]
+                }
+            ],
+            "nodes": [
+                {
+                    "mesh": 0
+                }
+            ],
+            "meshes": [],
+            "accessors": [],
+            "bufferViews": [],
+            "buffers": []
+        }
+
+        return json
