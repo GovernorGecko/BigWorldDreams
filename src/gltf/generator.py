@@ -43,11 +43,10 @@ bufferViews -> target (optional)
 
 class Generator:
     """
-    key:    POSITION,   NORMAL,     TEXTURE,    COLOR
-    value:  3 Floats,   3 Floats,   2 Floats,   3 Floats
+
     """
 
-    __slots__ = ["__attributes", "__attribute_order", "__indices", "__json", ]
+    __slots__ = ["__attributes", "__attribute_order", "__indices", ]
 
     # Attribute type names and their floats
     __attribute_types = {
@@ -84,7 +83,6 @@ class Generator:
         # Set up Variables
         self.__attributes = []
         self.__indices = []
-        self.__json = {}
 
         # Validate our passed in attribute order.
         for attribute_type in attribute_order:
@@ -159,12 +157,6 @@ class Generator:
     def build(self):
         """
         Builds and returns our GLTF Json
-        Scenes
-        Nodes
-        Meshes
-        Accessors
-        BufferViews
-        Buffers
         """
         json = {
             "scene": 0,
@@ -185,10 +177,42 @@ class Generator:
             "bufferViews": []
         }
 
-        # Buffer
-        buffer = {
+        # Buffer stores data in a sequence that matches
+        # each type of data in line.
+        buffer = {}
+        for buffer_type in self.__buffer_type_byte_count.keys():
+            buffer[buffer_type] = []
 
+        # Unsigned Short
+        if len(self.__indices):
+            buffer[5123].extend(self.__indices)
 
-        }
+        # Floats
+        for attribute_type in self.__attribute_order:
+            for attributes in self.__attributes:
+                buffer[5126].extend(attributes[attribute_type])
+
+        # BufferViews mention what type of data is stored in
+        # sequence of bytes.
+        buffer_views = []
+
+        # GL Element Array Buffer
+        if len(self.__indices):
+            buffer_views.append(
+                {
+                    "buffer": 0,
+                    "byteOffset": 0,
+                    "byteLength": len(self.__indices) * 2,
+                    "target": 34963
+                })
+
+        # GL Array Buffer
+        
+
+        # Accessors break out Buffer Views to what the data
+        # matches in our Mesh
+
+        print(buffer)
+        print(buffer_views)
 
         return json
