@@ -46,26 +46,32 @@ class Generator:
 
     """
 
-    __slots__ = ["__attributes", "__attribute_order", "__indices", ]
+    __slots__ = ["__attribute_type_order", "__buffer_views", "__json"]
 
-    # Attribute type names and their floats
-    __attribute_types = {
-        "POSITION": 3,
-        "NORMAL": 3,
-        "TEXTURE": 2,
-        "COLOR": 3
+    # Accessor to GL Type
+    __accessor_to_gl_type = {
+        "SCALAR": (5123),
+        "VEC2": (5126, 5126),
+        "VEC3": (5126, 5126, 5126),
     }
 
     # Asset information
     __asset_information = {
-        "asset": {
-            "version": 2.0,
-            "generator": "BigWorldDreams",
-        }
+        "version": 2.0,
+        "generator": "BigWorldDreams",
     }
 
-    # Buffer Type to Byte Count
-    __buffer_type_byte_count = {
+    # Attribute to Accessor Type
+    __attribute_to_accessor_type = {
+        "POSITION": "VEC3",
+        "NORMAL": "VEC3",
+        "TEXTURE": "VEC2",
+        "COLOR": "VEC3",
+        "indices": "SCALAR",
+    }    
+
+    # GL Type to Byte Count
+    __gl_type_to_byte_count = {
         5120: 1,  # GL_BYTE
         5121: 1,  # GL_UNSIGNED_BYTE
         5122: 2,  # GL_SHORT
@@ -78,27 +84,61 @@ class Generator:
         5129: 4,  # GL_4_BYTES
     }
 
-    def __init__(self, attribute_order={"POSITION"}):
+    def __init__(self, attribute_type_order={"POSITION"}):
 
         # Set up Variables
-        self.__attributes = []
-        self.__indices = []
+        self.__buffer_views = {}
+        self.__json = {
+            "asset": self.__asset_information,
+            "scene": 0,
+            "scenes": [
+                {
+                    "nodes": [
+                        0
+                    ]
+                }
+            ],
+            "nodes": [
+                {
+                    "mesh": 0
+                }
+            ],
+            "meshes": [
+                {
+                    "primitives": [
+                        {
+                            "attributes": {},
+                            "indices": 0
+                        }
+                    ]
+                }
+            ],
+            "accessors": [],
+            "bufferViews": []
+        }
+
+        # Valid attribute types
+        valid_attribute_types = self.__attribute_to_accessor_type.keys()
 
         # Validate our passed in attribute order.
-        for attribute_type in attribute_order:
-            if attribute_type not in self.__attribute_types.keys():
+        for attribute_type in attribute_type_order:
+            if attribute_type not in valid_attribute_types:
                 raise ValueError(
-                    f"Attribute types must be {self.__attribute_types.keys()}."
+                    f"Attribute types must be {valid_attribute_types}."
                 )
 
         # Set attribute order
-        self.__attribute_order = attribute_order
+        self.__attribute_type_order = attribute_type_order
+
+        # Set Meshes
+        for attribute_type in self.__attribute_type_order:
+            self.__json["meshes"][0]["primitives"][0]["attributes"][attribute_type] = len(self.__json["meshes"][0]["primitives"][0]["attributes"]) + 1
 
     def __str__(self):
         """
         Returns the GLTF Json in its current state.
         """
-        return f"{self.build()}"
+        return f"{self.__json}"
 
     def add_attribute_sequence(self, attribute_values):
         """
@@ -124,13 +164,15 @@ class Generator:
         attribute_dict = {}
 
         # We iterate our attribute order
-        for attribute_type in self.__attribute_order:
+        for attribute_type in self.__attribute_type_order:
 
             # Create an attribute_type entry
             attribute_dict[attribute_type] = []
 
             # How many floats we expecting?
-            floats_expected = self.__attribute_types[attribute_type]
+            floats_expected = len(
+                self.__get_gl_type_by_attribute(attribute_type)
+            )
 
             # Expected attribute values end
             end = start + floats_expected
@@ -147,35 +189,45 @@ class Generator:
             # Increment start
             start = end
 
-        # This attribute dict not already exist?
-        if attribute_dict not in self.__attributes:
-            self.__attributes.append(attribute_dict)
-            self.__indices.append(len(self.__indices))
-        else:
-            self.__indices.append(self.__attributes.index(attribute_dict))
+        print(attribute_dict)
 
+        # This attribute dict not already exist?
+        # if attribute_dict not in self.__attributes:
+        #    self.__attributes.append(attribute_dict)
+        #    self.__indices.append(len(self.__indices))
+        # else:
+        #    self.__indices.append(self.__attributes.index(attribute_dict))
+
+    def __buffer_data(self, data):
+        """
+        Given an object of data, handles adding it
+        to a buffer view.
+        """
+        print("hi")
+
+    def __get_bytes_by_attribute(self, attribute):
+        """
+        Calculate the bytes an attribute takes up.
+        """
+        b = 0
+        for gl_type in self.__get_gl_type_by_attribute(attribute):
+            b += self.__gl_type_to_byte_count[gl_type]
+        return b
+
+    def __get_gl_type_by_attribute(self, attribute):
+        """
+        Returns a Tuple, containing the gl type(s)
+        that make up the given attribute type.
+        """
+        return self.__accessor_to_gl_type[
+            self.__attribute_to_accessor_type[
+                attribute
+            ]
+        ]
+
+    """
     def build(self):
-        """
         Builds and returns our GLTF Json
-        """
-        json = {
-            "scene": 0,
-            "scenes": [
-                {
-                    "nodes": [
-                        0
-                    ]
-                }
-            ],
-            "nodes": [
-                {
-                    "mesh": 0
-                }
-            ],
-            "meshes": [],
-            "accessors": [],
-            "bufferViews": []
-        }
 
         # Buffer stores data in a sequence that matches
         # each type of data in line.
@@ -188,7 +240,7 @@ class Generator:
             buffer[5123].extend(self.__indices)
 
         # Floats
-        for attribute_type in self.__attribute_order:
+        for attribute_type in self.__attribute_type_order:
             for attributes in self.__attributes:
                 buffer[5126].extend(attributes[attribute_type])
 
@@ -207,12 +259,7 @@ class Generator:
                 })
 
         # GL Array Buffer
-        
 
         # Accessors break out Buffer Views to what the data
         # matches in our Mesh
-
-        print(buffer)
-        print(buffer_views)
-
-        return json
+    """
