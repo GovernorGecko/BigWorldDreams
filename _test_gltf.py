@@ -21,8 +21,8 @@ fout.close()
 
 from src.gltf.generator import Generator
 
-g = Generator(["POSITION", "TEXTURE"])
-g.add_attribute_sequence((0.0, 1.0, 0.0, 1.0, 1.0))
-g.add_attribute_sequence((1.0, 1.0, 0.0, 0.0, 0.0))
-g.add_attribute_sequence((1.0, 0.0, 0.0, 0.0, 0.0))
+g = Generator(["POSITION", "TEXTURE", "NORMAL"])
+g.add_attribute_sequence((0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0))
+g.add_attribute_sequence((1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+g.add_attribute_sequence((1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
 print(g)

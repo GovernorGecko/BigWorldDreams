@@ -43,16 +43,15 @@ bufferViews -> target (optional)
 
 class Generator:
     """
-
     """
 
     __slots__ = ["__attribute_type_order", "__buffer_views", "__json"]
 
     # Accessor to GL Type
-    __accessor_to_gl_type = {
-        "SCALAR": (5123),
-        "VEC2": (5126, 5126),
-        "VEC3": (5126, 5126, 5126),
+    __accessor_to_gl_information = {
+        "SCALAR": {"gl_type": 5123, "count": 1},
+        "VEC2": {"gl_type": 5126, "count": 2},
+        "VEC3": {"gl_type": 5126, "count": 3},
     }
 
     # Asset information
@@ -68,7 +67,7 @@ class Generator:
         "TEXTURE": "VEC2",
         "COLOR": "VEC3",
         "indices": "SCALAR",
-    }    
+    }
 
     # GL Type to Byte Count
     __gl_type_to_byte_count = {
@@ -107,8 +106,7 @@ class Generator:
                 {
                     "primitives": [
                         {
-                            "attributes": {},
-                            "indices": 0
+                            "attributes": {}
                         }
                     ]
                 }
@@ -130,9 +128,55 @@ class Generator:
         # Set attribute order
         self.__attribute_type_order = attribute_type_order
 
-        # Set Meshes
-        for attribute_type in self.__attribute_type_order:
-            self.__json["meshes"][0]["primitives"][0]["attributes"][attribute_type] = len(self.__json["meshes"][0]["primitives"][0]["attributes"]) + 1
+        # Accessors list
+        accessors = []
+        accessors.append("indices")
+        accessors.extend(attribute_type_order)
+
+        # Build Buffer Views, Accessors, and Meshes
+        for attribute_type in accessors:
+
+            # Buffer Views
+            byte_stride = self.__get_bytes_by_attribute(attribute_type)
+            buffer_view_index = self.__get_buffer_view_by_byte_stride(
+                byte_stride
+            )
+
+            # No index with this Stride?
+            # Add it!
+            if buffer_view_index == -1:
+                target = 34964 if attribute_type == 'indices' else 34962
+                self.__json["bufferViews"].append(
+                    {
+                        "buffer": 0,
+                        "byteOffset": -1,  # Signifies no data.
+                        "byteLength": 0,
+                        "byteStride": byte_stride,
+                        "target": target
+                    }
+                )
+                buffer_view_index = len(self.__json["bufferViews"]) - 1
+
+            # Accessors
+            self.__json["accessors"].append(
+                {
+                    "bufferView": buffer_view_index,
+                    "byteOffset": -1,  # Signifies no data.
+                    "componentType": self.__get_gl_type_by_attribute(
+                        attribute_type
+                    ),
+                    "count": 0,
+                    "max": [],
+                    "min": [],
+                    "type": self.__attribute_to_accessor_type[attribute_type],
+                }
+            )
+
+            # Meshes
+            if attribute_type != "indices":
+                self.__json["meshes"][0]["primitives"][0]["attributes"][attribute_type] = len(self.__json["accessors"]) - 1
+            else:
+                self.__json["meshes"][0]["primitives"][0]["indices"] = len(self.__json["accessors"]) - 1
 
     def __str__(self):
         """
@@ -170,9 +214,7 @@ class Generator:
             attribute_dict[attribute_type] = []
 
             # How many floats we expecting?
-            floats_expected = len(
-                self.__get_gl_type_by_attribute(attribute_type)
-            )
+            floats_expected = self.__get_gl_count_by_attribute(attribute_type)
 
             # Expected attribute values end
             end = start + floats_expected
@@ -189,7 +231,36 @@ class Generator:
             # Increment start
             start = end
 
-        print(attribute_dict)
+        # Iterate
+        for attribute_type, values in attribute_dict.items():
+
+            accessor = self.__json["accessors"][
+                self.__json["meshes"][0]["primitives"][0]["attributes"][attribute_type]
+            ]
+
+            buffer_view = self.__json["bufferViews"][
+                accessor["bufferView"]
+            ]
+
+            if buffer_view not in self.__buffer_views.keys():
+                self.__buffer_views[buffer_view] = {}
+            if accessor not in self.__buffer_views[accessor].keys():
+                self.__buffer_views[buffer_view][accessor] = []
+
+            self.__buffer_views[buffer_view][accessor].extend(values)
+                
+            print(self.__buffer_views)
+
+        # First off, we need to see if this series of values is unique
+        # If it isn't, we need the index that it is already residing in
+        # If it is, we create a new index.
+        # Each attribute can fetch their accessor, fill in count, max, min
+        # then pass their new data to their BufferView
+        # The Buffer View can then configure its offset, and length, passing
+        # back a byteOffset to the accessor if it is sharing space
+        # in the View with another accessor.
+        # Then when we build the binary, these views handle it.
+        # print(attribute_dict)
 
         # This attribute dict not already exist?
         # if attribute_dict not in self.__attributes:
@@ -198,68 +269,43 @@ class Generator:
         # else:
         #    self.__indices.append(self.__attributes.index(attribute_dict))
 
-    def __buffer_data(self, data):
+    def __get_buffer_view_by_byte_stride(self, byte_stride):
         """
-        Given an object of data, handles adding it
-        to a buffer view.
+        Given a byte stride, finds which Buffer View it belongs
+        to, if it already exists.
         """
-        print("hi")
+        for i in range(0, len(self.__json["bufferViews"])):
+            if self.__json["bufferViews"][i]["byteStride"] == byte_stride:
+                return i
+        return -1
 
     def __get_bytes_by_attribute(self, attribute):
         """
         Calculate the bytes an attribute takes up.
         """
-        b = 0
-        for gl_type in self.__get_gl_type_by_attribute(attribute):
-            b += self.__gl_type_to_byte_count[gl_type]
-        return b
+        gl_information = self.__get_gl_information_by_attribute(attribute)
+        gl_type_bytes = self.__gl_type_to_byte_count[gl_information["gl_type"]]
+        return gl_type_bytes * gl_information["count"]
 
-    def __get_gl_type_by_attribute(self, attribute):
+    def __get_gl_count_by_attribute(self, attribute):
         """
-        Returns a Tuple, containing the gl type(s)
-        that make up the given attribute type.
         """
-        return self.__accessor_to_gl_type[
+        return self.__get_gl_information_by_attribute(
+            attribute
+        )["count"]
+
+    def __get_gl_information_by_attribute(self, attribute):
+        """
+        """
+        return self.__accessor_to_gl_information[
             self.__attribute_to_accessor_type[
                 attribute
             ]
         ]
 
-    """
-    def build(self):
-        Builds and returns our GLTF Json
-
-        # Buffer stores data in a sequence that matches
-        # each type of data in line.
-        buffer = {}
-        for buffer_type in self.__buffer_type_byte_count.keys():
-            buffer[buffer_type] = []
-
-        # Unsigned Short
-        if len(self.__indices):
-            buffer[5123].extend(self.__indices)
-
-        # Floats
-        for attribute_type in self.__attribute_type_order:
-            for attributes in self.__attributes:
-                buffer[5126].extend(attributes[attribute_type])
-
-        # BufferViews mention what type of data is stored in
-        # sequence of bytes.
-        buffer_views = []
-
-        # GL Element Array Buffer
-        if len(self.__indices):
-            buffer_views.append(
-                {
-                    "buffer": 0,
-                    "byteOffset": 0,
-                    "byteLength": len(self.__indices) * 2,
-                    "target": 34963
-                })
-
-        # GL Array Buffer
-
-        # Accessors break out Buffer Views to what the data
-        # matches in our Mesh
-    """
+    def __get_gl_type_by_attribute(self, attribute):
+        """
+        """
+        return self.__get_gl_information_by_attribute(
+            attribute
+        )["gl_type"]
