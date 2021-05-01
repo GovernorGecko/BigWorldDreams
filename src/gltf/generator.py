@@ -45,7 +45,7 @@ class Generator:
     """
     """
 
-    __slots__ = ["__attribute_type_order", "__buffer_views", "__json"]
+    __slots__ = ["__attribute_type_order", "__buffer", "__json"]
 
     # Accessor to GL Type
     __accessor_to_gl_information = {
@@ -86,7 +86,7 @@ class Generator:
     def __init__(self, attribute_type_order={"POSITION"}):
 
         # Set up Variables
-        self.__buffer_views = {}
+        self.__buffer = []
         self.__json = {
             "asset": self.__asset_information,
             "scene": 0,
@@ -149,7 +149,7 @@ class Generator:
                 self.__json["bufferViews"].append(
                     {
                         "buffer": 0,
-                        "byteOffset": -1,  # Signifies no data.
+                        "byteOffset": None,  # Signifies no data.
                         "byteLength": 0,
                         "byteStride": byte_stride,
                         "target": target
@@ -161,7 +161,7 @@ class Generator:
             self.__json["accessors"].append(
                 {
                     "bufferView": buffer_view_index,
-                    "byteOffset": -1,  # Signifies no data.
+                    "byteOffset": None,  # Signifies no data.
                     "componentType": self.__get_gl_type_by_attribute(
                         attribute_type
                     ),
@@ -182,7 +182,7 @@ class Generator:
         """
         Returns the GLTF Json in its current state.
         """
-        return f"{self.__json}"
+        return f"{self.__json} {self.__buffer}"
 
     def add_attribute_sequence(self, attribute_values):
         """
@@ -234,40 +234,75 @@ class Generator:
         # Iterate
         for attribute_type, values in attribute_dict.items():
 
+            # Set up accessor
             accessor = self.__json["accessors"][
                 self.__json["meshes"][0]["primitives"][0]["attributes"][attribute_type]
             ]
 
+            # Min/Max/Count
+
+            # Set up buffer view
             buffer_view = self.__json["bufferViews"][
                 accessor["bufferView"]
             ]
 
-            if buffer_view not in self.__buffer_views.keys():
-                self.__buffer_views[buffer_view] = {}
-            if accessor not in self.__buffer_views[accessor].keys():
-                self.__buffer_views[buffer_view][accessor] = []
+            # Bytes this attribute adds
+            bytes_added = self.__get_bytes_by_attribute(attribute_type)
 
-            self.__buffer_views[buffer_view][accessor].extend(values)
-                
-            print(self.__buffer_views)
+            # If bufferView's byteOffset is None, then we set it
+            # to the end of our existing byte total.
+            # If both are None, we set our accessor to a byteOffset of 0.
+            if buffer_view["byteOffset"] is None:
+                buffer_view["byteOffset"] = self.__get_total_buffer_bytes()
+                if accessor["byteOffset"] is None:
+                    accessor["byteOffset"] = 0
+            else:
+                # We need to look at other bufferViews and update those that
+                # use our buffer and are greater than our offset.
+                for o_buffer_view in self.__json["bufferViews"]:
+                    if(
+                        o_buffer_view != buffer_view and
+                        o_buffer_view["byteOffset"] is not None and
+                        o_buffer_view["buffer"] == buffer_view["buffer"] and
+                        o_buffer_view["byteOffset"] > buffer_view["byteOffset"]
+                    ):
+                        o_buffer_view["byteOffset"] += bytes_added
+                # Accessor doesn't have a byteOffset but the bufferView
+                # already has data it references, so set our accessor to the
+                # end of the bufferView.
+                if accessor["byteOffset"] is None:
+                    accessor["byteOffset"] = buffer_view["byteLength"]
+                # Our accessor has a byteOffset, meaning there could be other
+                # accessors using this bufferView.  We need to reach out to
+                # them and increment their byteOffset if they already have
+                # one and it is greater than ours.
+                else:
+                    for o_accessor in self.__json["accessors"]:
+                        if (
+                            o_accessor != accessor and
+                            o_accessor["byteOffset"] is not None and
+                            o_accessor["bufferView"] == accessor["bufferView"] and
+                            o_accessor["byteOffset"] > accessor["byteOffset"]
+                        ):
+                            o_accessor["byteOffset"] += bytes_added
 
-        # First off, we need to see if this series of values is unique
-        # If it isn't, we need the index that it is already residing in
-        # If it is, we create a new index.
-        # Each attribute can fetch their accessor, fill in count, max, min
-        # then pass their new data to their BufferView
-        # The Buffer View can then configure its offset, and length, passing
-        # back a byteOffset to the accessor if it is sharing space
-        # in the View with another accessor.
-        # Then when we build the binary, these views handle it.
-        # print(attribute_dict)
+            # Insert into our buffer
+            buffer_index = self.__get_buffer_index_by_bytes(
+                buffer_view["byteOffset"] + buffer_view["byteLength"]
+            )
 
-        # This attribute dict not already exist?
-        # if attribute_dict not in self.__attributes:
-        #    self.__attributes.append(attribute_dict)
-        #    self.__indices.append(len(self.__indices))
-        # else:
-        #    self.__indices.append(self.__attributes.index(attribute_dict))
+            # Set bufferView byteLength
+            buffer_view["byteLength"] += bytes_added
+
+    def __get_buffer_index_by_bytes(self, desired_bytes):
+        """
+        Given a bytes value, finds at what index
+        in our buffer this represents.
+        """
+        index = 0
+        current_bytes = 0
+        while current_bytes < desired_bytes:
+            
 
     def __get_buffer_view_by_byte_stride(self, byte_stride):
         """
@@ -309,3 +344,12 @@ class Generator:
         return self.__get_gl_information_by_attribute(
             attribute
         )["gl_type"]
+
+    def __get_total_buffer_bytes(self):
+        """
+        Gets our total bytes in our buffer
+        """
+        total_bytes = 0
+        for buffer_view in self.__json["bufferViews"]:
+            total_bytes += buffer_view["byteLength"]
+        return total_bytes
