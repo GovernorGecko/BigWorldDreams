@@ -121,7 +121,8 @@ class Accessor:
         """
         """
         self.__count += 1
-        
+        self.__max = [max(*j) for j in zip(self.__max, values)]
+        self.__min = [min(*k) for k in zip(self.__min, values)]
 
     def set_buffer_view(self, buffer_view):
         """

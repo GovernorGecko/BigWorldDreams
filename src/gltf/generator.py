@@ -29,6 +29,7 @@ bufferViews -> target (optional)
 """
 
 import copy
+import json
 
 from .accessor import Accessor
 
@@ -318,3 +319,12 @@ class Generator:
         for buffer_view in self.__json["bufferViews"]:
             total_bytes += buffer_view["byteLength"]
         return total_bytes
+
+    def save(self, path, filename):
+        """
+        """
+        print("saving")
+        # with open('data.gltf', 'w') as outfile:
+        # print(json.dumps(self.__json))  # , outfile)
+        json_info = json.dumps(str(self.__json))
+        print(json_info)
