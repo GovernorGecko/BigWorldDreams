@@ -1,6 +1,9 @@
 """
-Thoughts:
-    -buffer view class?
+TODO
+    - Accessor class methods comments
+    - Duplicate Indices
+    - Normal/Texture
+    - buffer view class?
         - Could have __accessed_by List for objects that use it
             (Accessors needs same)
         - Could be in Accessor __buffer_view

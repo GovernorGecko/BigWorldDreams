@@ -37,7 +37,7 @@ class Generator:
     """
     """
 
-    __slots__ = ["__attribute_order", "__buffer", "__json"]
+    __slots__ = ["__attribute_order", "__buffer", "__json", "__temp_index"]
 
     # Asset information
     __asset_information = {
@@ -45,16 +45,19 @@ class Generator:
         "generator": "BigWorldDreams",
     }
 
-    # Attribute to Accessor Type
-    __attribute_to_accessor_type = {
+    # Attribute to Accessor
+    __attribute_to_accessor = {
         "POSITION": Accessor(5126, "VEC3", 3),
         "NORMAL": Accessor(5126, "VEC3", 3),
         "TEXTURE": Accessor(5126, "VEC2", 2),
         "COLOR": Accessor(5126, "VEC3", 3),
-        "indices": Accessor(5123, "SCALAR", 3),
+        "indices": Accessor(5123, "SCALAR", 1),
     }
 
     def __init__(self, attribute_order={"POSITION"}):
+
+        # Temp
+        self.__temp_index = 0
 
         # Set up Variables
         self.__buffer = []
@@ -87,7 +90,7 @@ class Generator:
         }
 
         # Valid attribute types
-        valid_attributes = self.__attribute_to_accessor_type.keys()
+        valid_attributes = self.__attribute_to_accessor.keys()
 
         # Validate our passed in attribute order.
         for attribute in attribute_order:
@@ -108,7 +111,7 @@ class Generator:
         for attribute in attributes:
 
             # Accessor
-            accessor = copy.copy(self.__attribute_to_accessor_type[attribute])
+            accessor = copy.copy(self.__attribute_to_accessor[attribute])
 
             # Buffer Views
             buffer_view_index = self.__get_buffer_view_by_byte_stride(
@@ -173,7 +176,7 @@ class Generator:
         for attribute in self.__attribute_order:
 
             # Attribute's accessor
-            attribute_accessor = self.__attribute_to_accessor_type[attribute]
+            attribute_accessor = self.__attribute_to_accessor[attribute]
 
             # Create an attribute entry
             attribute_dict[attribute] = []
@@ -193,18 +196,25 @@ class Generator:
             # Increment start
             start = end
 
+        # Do we have an indices entry for these values?
+        attribute_dict["indices"] = [self.__temp_index]
+        self.__temp_index += 1
+
         # Iterate
         for attribute, values in attribute_dict.items():
 
-            # Attribute's accessor
-            attribute_accessor = self.__attribute_to_accessor_type[attribute]
-
             # Set up accessor
-            accessor = self.__json["accessors"][
-                self.__json["meshes"][0]["primitives"][0]["attributes"][attribute]
-            ]
+            if attribute != 'indices':
+                accessor = self.__json["accessors"][
+                    self.__json["meshes"][0]["primitives"][0]["attributes"][attribute]
+                ]
+            else:
+                accessor = self.__json["accessors"][
+                    self.__json["meshes"][0]["primitives"][0]['indices']
+                ]
 
             # Min/Max/Count
+            accessor.new_value(values)
 
             # Set up buffer view
             buffer_view = self.__json["bufferViews"][
@@ -255,7 +265,7 @@ class Generator:
             self.__buffer[buffer_index:buffer_index] = values
 
             # Set bufferView byteLength
-            buffer_view["byteLength"] += attribute_accessor.get_byte_stride()
+            buffer_view["byteLength"] += accessor.get_byte_stride()
 
     def __get_buffer_index_by_bytes(self, desired_bytes):
         """

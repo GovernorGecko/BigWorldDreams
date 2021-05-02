@@ -68,7 +68,7 @@ class Accessor:
     def __str__(self):
         """
         """
-        return str(self.get_json())    
+        return str(self.get_json())
 
     def get_buffer_view(self):
         """
@@ -116,6 +116,12 @@ class Accessor:
         """
         """
         return self.__stride
+
+    def new_value(self, values):
+        """
+        """
+        self.__count += 1
+        
 
     def set_buffer_view(self, buffer_view):
         """
