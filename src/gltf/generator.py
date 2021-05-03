@@ -348,11 +348,3 @@ class Generator:
         # Write our binary file
         with open(f"{self.__name}.bin", "wb") as outfile:
             outfile.write(struct.pack(pack_info, *self.__buffer))
-
-        # print(struct.unpack(pack_info, packed_info))
-
-        # print(json.dumps(self.__json))  # , outfile)
-        # print(json_info.replace('"', ''))
-        # print(self.__get_accessor_by_index(8))
-
-        # struct.pack('>f', i)
