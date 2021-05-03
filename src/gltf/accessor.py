@@ -12,8 +12,6 @@ accessors -> componentType
 5129    GL_4_BYTES
 """
 
-import json
-
 
 class Accessor:
     """
@@ -65,8 +63,8 @@ class Accessor:
     def __repr__(self):
         """
         """
-        # return self.__str__()
-        return json.dumps(self.get_json())
+        return self.__str__()
+        # return json.dumps(self.get_json())
 
     def __str__(self):
         """

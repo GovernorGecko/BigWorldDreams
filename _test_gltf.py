@@ -7,6 +7,7 @@ TODO
         - Could have __accessed_by List for objects that use it
             (Accessors needs same)
         - Could be in Accessor __buffer_view
+    - Should we store buffer as ['STRUCTTYPE', VALUE]?
 
 i: 0, 1, 2, 1, 2, 3
 (0,1,0)
@@ -35,9 +36,9 @@ from src.gltf.generator import Generator
 # print(a.get_byte_stride())
 # print(a)
 
-g = Generator(["POSITION"])  # , "TEXTURE", "NORMAL"])
+g = Generator("test", ["POSITION"])  # , "TEXTURE", "NORMAL"])
 g.add_attribute_sequence((0.0, 1.0, 0.0))  # , 1.0, 1.0, 1.0, 1.0, 1.0))
 g.add_attribute_sequence((1.0, 1.0, 0.0))  # , 0.0, 0.0, 1.0, 1.0, 1.0))
 g.add_attribute_sequence((1.0, 0.0, 0.0))  # , 0.0, 0.0, 1.0, 1.0, 1.0))
 print(g)
-g.save("test", "test")
+g.save("test")

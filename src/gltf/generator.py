@@ -38,11 +38,14 @@ class Generator:
     """
     """
 
-    __slots__ = ["__attribute_order", "__buffer", "__json", "__temp_index"]
+    __slots__ = [
+        "__attribute_order", "__buffer", "__json", "__name",
+        "__temp_index"
+        ]
 
     # Asset information
     __asset_information = {
-        "version": 2.0,
+        "version": "2.0",
         "generator": "BigWorldDreams",
     }
 
@@ -55,7 +58,7 @@ class Generator:
         "indices": Accessor(5123, "SCALAR", 1),
     }
 
-    def __init__(self, attribute_order={"POSITION"}):
+    def __init__(self, name, attribute_order={"POSITION"}):
 
         # Temp
         self.__temp_index = 0
@@ -87,8 +90,15 @@ class Generator:
                 }
             ],
             "accessors": [],
-            "bufferViews": []
+            "bufferViews": [],
+            "buffers": [
+                {
+                    "byteLength": 0,
+                    "uri": f"{name}.bin"
+                }
+            ]
         }
+        self.__name = name
 
         # Valid attribute types
         valid_attributes = self.__attribute_to_accessor.keys()
@@ -268,9 +278,12 @@ class Generator:
             # Set bufferView byteLength
             buffer_view["byteLength"] += accessor.get_byte_stride()
 
-    def __get_buffer_index_by_bytes(self, desired_bytes):
+        # Update our buffer size
+        self.__json["buffers"][0]["byteLength"] = self.__get_total_buffer_bytes()
+
+    def __get_accessor_by_bytes(self, desired_bytes):
         """
-        Given a bytes value, finds at what index in our buffer this is at.
+        Returns the accessor at the given bytes.
 
         This requires us to loop through our bufferViews and accessors that
         use those bufferViews.  Since the bufferView knows its byte range
@@ -279,27 +292,44 @@ class Generator:
         many bytes each individual item in that range add.  This is imperitive
         since our buffer doesn't care about bytes in its base form.
         """
-        index = 0
+        for buffer_view_index in range(0, len(self.__json["bufferViews"])):
+            buffer_view = self.__json["bufferViews"][buffer_view_index]
+            for accessor in self.__json["accessors"]:
+                if (
+                    buffer_view["byteOffset"] is not None and
+                    accessor.get_byte_offset() is not None and
+                    accessor.get_buffer_view() == buffer_view_index and
+                    desired_bytes >= buffer_view["byteOffset"] + accessor.get_byte_offset() and
+                    desired_bytes < buffer_view["byteOffset"] + buffer_view["byteLength"]
+                ):
+                    return accessor
+        return None
+
+    def __get_buffer_bytes_by_index(self, desired_index):
+        """
+        Given an index value, finds at what bytes in our buffer this is at.
+        """
+        current_index = 0
+        current_bytes = 0
+        while current_index < desired_index:
+            accessor = self.__get_accessor_by_bytes(current_bytes)
+            if accessor is not None:
+                current_bytes += accessor.get_component_type_stride()
+                current_index += 1
+        return current_bytes
+
+    def __get_buffer_index_by_bytes(self, desired_bytes):
+        """
+        Given a bytes value, finds at what index in our buffer this is at.
+        """
+        current_index = 0
         current_bytes = 0
         while current_bytes < desired_bytes:
-            buffer_view_stride = 0
-            for buffer_view_index in range(0, len(self.__json["bufferViews"])):
-                buffer_view = self.__json["bufferViews"][buffer_view_index]
-                for accessor in self.__json["accessors"]:
-                    if (
-                        buffer_view["byteOffset"] is not None and
-                        accessor.get_byte_offset() is not None and
-                        accessor.get_buffer_view() == buffer_view_index and
-                        current_bytes >= buffer_view["byteOffset"] + accessor.get_byte_offset() and
-                        current_bytes < buffer_view["byteOffset"] + buffer_view["byteLength"]
-                    ):
-                        buffer_view_stride = accessor.get_component_type_stride()
-                        break
-                if buffer_view_stride != 0:
-                    current_bytes += buffer_view_stride
-                    index += 1
-                    break
-        return index
+            accessor = self.__get_accessor_by_bytes(current_bytes)
+            if accessor is not None:
+                current_bytes += accessor.get_component_type_stride()
+                current_index += 1
+        return current_index
 
     def __get_buffer_view_by_byte_stride(self, byte_stride):
         """
@@ -320,11 +350,12 @@ class Generator:
             total_bytes += buffer_view["byteLength"]
         return total_bytes
 
-    def save(self, path, filename):
+    def save(self, path):
         """
         """
         print("saving")
-        # with open('data.gltf', 'w') as outfile:
+        json_info = json.dumps(str(self.__json))
+        with open(f"{self.__name}.gltf", "w") as outfile:
+            outfile.write(json_info.replace('"', '').replace("'", '"'))
         # print(json.dumps(self.__json))  # , outfile)
-        json_info = json.dumps(self.__json)
-        print(json_info)
+        # print(json_info.replace('"', ''))
