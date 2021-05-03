@@ -10,6 +10,27 @@ accessors -> componentType
 5127    GL_2_BYTES
 5128    GL_3_BYTES
 5129    GL_4_BYTES
+
+x	pad byte	        no value
+c	char	            bytes of length     1	1
+b	signed char	        integer	            1	(1),(3)
+B	unsigned char	    integer	            1	(3)
+?	_Bool	            bool	            1	(1)
+h	short	            integer	            2	(3)
+H	unsigned short	    integer	            2	(3)
+i	int	                integer	            4	(3)
+I	unsigned int	    integer	            4	(3)
+l	long	            integer	            4	(3)
+L	unsigned long	    integer	            4	(3)
+q	long long	        integer	            8	(2), (3)
+Q	unsigned long long	integer         	8	(2), (3)
+n	ssize_t	            integer	 	            (4)
+N	size_t	            integer	 	            (4)
+f	float	            float	            4	(5)
+d	double	            float	            8	(5)
+s	char[]	            bytes
+p	char[]	            bytee
+P	void *	            integer	 	            (6)
 """
 
 
@@ -35,6 +56,12 @@ class Accessor:
         5127: 2,  # GL_2_BYTES
         5128: 3,  # GL_3_BYTES
         5129: 4,  # GL_4_BYTES
+    }
+
+    # GL Type to Struct Type
+    __gl_type_to_struct_type = {
+        5123: "H",
+        5126: "f",
     }
 
     __slots__ = [
@@ -117,6 +144,13 @@ class Accessor:
         """
         """
         return self.__stride
+
+    def get_struct_type(self):
+        """
+        """
+        if self.__gl_type in self.__gl_type_to_struct_type:
+            return self.__gl_type_to_struct_type[self.__gl_type]
+        return None
 
     def new_value(self, values):
         """

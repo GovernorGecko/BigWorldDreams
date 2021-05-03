@@ -1,27 +1,5 @@
 """
 A GLTF 2.0 Generator
-x	pad byte	        no value
-c	char	            bytes of length     1	1
-b	signed char	        integer	            1	(1),(3)
-B	unsigned char	    integer	            1	(3)
-?	_Bool	            bool	            1	(1)
-h	short	            integer	            2	(3)
-H	unsigned short	    integer	            2	(3)
-i	int	                integer	            4	(3)
-I	unsigned int	    integer	            4	(3)
-l	long	            integer	            4	(3)
-L	unsigned long	    integer	            4	(3)
-q	long long	        integer	            8	(2), (3)
-Q	unsigned long long	integer         	8	(2), (3)
-n	ssize_t	            integer	 	            (4)
-N	size_t	            integer	 	            (4)
-f	float	            float	            4	(5)
-d	double	            float	            8	(5)
-s	char[]	            bytes
-p	char[]	            bytee
-P	void *	            integer	 	            (6)
-import struct
-struct.pack('>f', i)
 
 bufferViews -> target (optional)
 34962   GL_ARRAY_BUFFER
@@ -30,6 +8,7 @@ bufferViews -> target (optional)
 
 import copy
 import json
+import struct
 
 from .accessor import Accessor
 
@@ -132,7 +111,7 @@ class Generator:
             # No index with this Stride?
             # Add it!
             if buffer_view_index == -1:
-                target = 34964 if attribute == 'indices' else 34962
+                target = 34963 if attribute == 'indices' else 34962
                 self.__json["bufferViews"].append(
                     {
                         "buffer": 0,
@@ -305,18 +284,19 @@ class Generator:
                     return accessor
         return None
 
-    def __get_buffer_bytes_by_index(self, desired_index):
+    def __get_accessor_by_index(self, desired_index):
         """
-        Given an index value, finds at what bytes in our buffer this is at.
+        Given an index value, finds what accessor owns these bytes.
         """
+        accessor = None
         current_index = 0
         current_bytes = 0
-        while current_index < desired_index:
+        while current_index <= desired_index:
             accessor = self.__get_accessor_by_bytes(current_bytes)
             if accessor is not None:
                 current_bytes += accessor.get_component_type_stride()
                 current_index += 1
-        return current_bytes
+        return accessor
 
     def __get_buffer_index_by_bytes(self, desired_bytes):
         """
@@ -353,9 +333,26 @@ class Generator:
     def save(self, path):
         """
         """
-        print("saving")
+
+        # Grab our Json/GLTF information
         json_info = json.dumps(str(self.__json))
         with open(f"{self.__name}.gltf", "w") as outfile:
             outfile.write(json_info.replace('"', '').replace("'", '"'))
+
+        # Build out our pack data
+        pack_info = ""
+        for i in range(0, len(self.__buffer)):
+            accessor = self.__get_accessor_by_index(i)
+            pack_info += accessor.get_struct_type()
+
+        # Write our binary file
+        with open(f"{self.__name}.bin", "wb") as outfile:
+            outfile.write(struct.pack(pack_info, *self.__buffer))
+
+        # print(struct.unpack(pack_info, packed_info))
+
         # print(json.dumps(self.__json))  # , outfile)
         # print(json_info.replace('"', ''))
+        # print(self.__get_accessor_by_index(8))
+
+        # struct.pack('>f', i)
