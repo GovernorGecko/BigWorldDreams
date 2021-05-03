@@ -326,5 +326,5 @@ class Generator:
         print("saving")
         # with open('data.gltf', 'w') as outfile:
         # print(json.dumps(self.__json))  # , outfile)
-        json_info = json.dumps(str(self.__json))
+        json_info = json.dumps(self.__json)
         print(json_info)
