@@ -71,7 +71,6 @@ class Accessor:
 
     def __init__(self, gl_type, data_type, stride):
         self.__gl_type = gl_type
-        self.__count = 0
         self.__data_type = data_type
         self.__stride = stride
 
@@ -102,6 +101,11 @@ class Accessor:
         """
         """
         return self.__buffer_view
+
+    def get_byte_length(self):
+        """
+        """
+        return self.get_byte_stride() * self.__count
 
     def get_byte_offset(self):
         """

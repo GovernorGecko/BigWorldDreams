@@ -246,11 +246,11 @@ class Generator:
                             o_accessor.get_buffer_view() == accessor.get_buffer_view() and
                             o_accessor.get_byte_offset() > accessor.get_byte_offset()
                         ):
-                            o_accessor.set_byte_offset(accessor.get_byte_stride())
+                            o_accessor.set_byte_offset(accessor.get_byte_length())
 
             # Insert/Slice into our buffer
             buffer_index = self.__get_buffer_index_by_bytes(
-                buffer_view["byteOffset"] + buffer_view["byteLength"]
+                buffer_view["byteOffset"] + accessor.get_byte_length()  # buffer_view["byteLength"]
             )
             self.__buffer[buffer_index:buffer_index] = values
 
