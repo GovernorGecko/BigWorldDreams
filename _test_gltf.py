@@ -1,13 +1,12 @@
 """
 TODO
-    - Accessor class methods comments
+    - Accessor class methods comments and error checking
     - Duplicate Indices
     - Normal/Texture
     - buffer view class?
         - Could have __accessed_by List for objects that use it
             (Accessors needs same)
         - Could be in Accessor __buffer_view
-    - Should we store buffer as ['STRUCTTYPE', VALUE]?
 
 i: 0, 1, 2, 1, 2, 3
 (0,1,0)

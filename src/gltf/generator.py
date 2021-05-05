@@ -18,7 +18,7 @@ class Generator:
     """
 
     __slots__ = [
-        "__attribute_order", "__buffer", "__json", "__name",
+        "__attribute_order", "__json", "__name",
         "__temp_index"
         ]
 
@@ -43,7 +43,6 @@ class Generator:
         self.__temp_index = 0
 
         # Set up Variables
-        self.__buffer = []
         self.__json = {
             "asset": self.__asset_information,
             "scene": 0,
@@ -137,7 +136,7 @@ class Generator:
         """
         Returns the GLTF Json in its current state.
         """
-        return f"{self.__json} {self.__buffer}"
+        return f"{self.__json}"
 
     def add_attribute_sequence(self, attribute_values):
         """
@@ -172,7 +171,7 @@ class Generator:
             attribute_dict[attribute] = []
 
             # Expected attribute values end
-            end = start + attribute_accessor.get_stride()
+            end = start + attribute_accessor.get_vars_per_value()
 
             # We have enough floats?
             if end > len(attribute_values):
@@ -204,7 +203,7 @@ class Generator:
                 ]
 
             # Min/Max/Count
-            accessor.new_value(values)
+            accessor.add_values(values)
 
             # Set up buffer view
             buffer_view = self.__json["bufferViews"][
@@ -248,12 +247,6 @@ class Generator:
                         ):
                             o_accessor.set_byte_offset(accessor.get_byte_length())
 
-            # Insert/Slice into our buffer
-            buffer_index = self.__get_buffer_index_by_bytes(
-                buffer_view["byteOffset"] + accessor.get_byte_length()  # buffer_view["byteLength"]
-            )
-            self.__buffer[buffer_index:buffer_index] = values
-
             # Set bufferView byteLength
             buffer_view["byteLength"] += accessor.get_byte_stride()
 
@@ -278,38 +271,13 @@ class Generator:
                     buffer_view["byteOffset"] is not None and
                     accessor.get_byte_offset() is not None and
                     accessor.get_buffer_view() == buffer_view_index and
-                    desired_bytes >= buffer_view["byteOffset"] + accessor.get_byte_offset() and
-                    desired_bytes < buffer_view["byteOffset"] + buffer_view["byteLength"]
+                    desired_bytes in range(
+                        buffer_view["byteOffset"] + accessor.get_byte_offset(),
+                        buffer_view["byteOffset"] + accessor.get_byte_offset() + accessor.get_byte_length()
+                    )
                 ):
                     return accessor
         return None
-
-    def __get_accessor_by_index(self, desired_index):
-        """
-        Given an index value, finds what accessor owns these bytes.
-        """
-        accessor = None
-        current_index = 0
-        current_bytes = 0
-        while current_index <= desired_index:
-            accessor = self.__get_accessor_by_bytes(current_bytes)
-            if accessor is not None:
-                current_bytes += accessor.get_component_type_stride()
-                current_index += 1
-        return accessor
-
-    def __get_buffer_index_by_bytes(self, desired_bytes):
-        """
-        Given a bytes value, finds at what index in our buffer this is at.
-        """
-        current_index = 0
-        current_bytes = 0
-        while current_bytes < desired_bytes:
-            accessor = self.__get_accessor_by_bytes(current_bytes)
-            if accessor is not None:
-                current_bytes += accessor.get_component_type_stride()
-                current_index += 1
-        return current_index
 
     def __get_buffer_view_by_byte_stride(self, byte_stride):
         """
@@ -339,12 +307,15 @@ class Generator:
         with open(f"{self.__name}.gltf", "w") as outfile:
             outfile.write(json_info.replace('"', '').replace("'", '"'))
 
-        # Build out our pack data
+        current_bytes = 0
+        pack_data = []
         pack_info = ""
-        for i in range(0, len(self.__buffer)):
-            accessor = self.__get_accessor_by_index(i)
-            pack_info += accessor.get_struct_type()
+        while current_bytes < self.__get_total_buffer_bytes():
+            accessor = self.__get_accessor_by_bytes(current_bytes)
+            current_bytes += accessor.get_byte_length()
+            pack_data.extend(accessor.get_values())
+            pack_info += accessor.get_struct_type() * len(accessor.get_values())
 
         # Write our binary file
         with open(f"{self.__name}.bin", "wb") as outfile:
-            outfile.write(struct.pack(pack_info, *self.__buffer))
+            outfile.write(struct.pack(pack_info, *pack_data))

@@ -65,26 +65,38 @@ class Accessor:
     }
 
     __slots__ = [
-        "__buffer_view", "__byte_offset", "__count", "__data_type",
-        "__gl_type", "__max", "__min", "__stride"
+        "__buffer_view", "__byte_offset", "__data_type", "__gl_type",
+        "__max", "__min", "__values", "__vars_per_value"
     ]
 
-    def __init__(self, gl_type, data_type, stride):
+    def __init__(self, gl_type, data_type, vars_per_value):
+
+        # Valid gl type?
+        if gl_type not in self.__gl_type_to_byte_count.keys():
+            raise ValueError(
+                    f"gl_type must be {self.__gl_type_to_byte_count.keys()}."
+                )
+
         self.__gl_type = gl_type
         self.__data_type = data_type
-        self.__stride = stride
+        self.__vars_per_value = vars_per_value
 
         # Initialize Variables
         self.__buffer_view = None
         self.__byte_offset = None
-        self.__count = 0
-        self.__max = [0] * stride
-        self.__min = [0] * stride
+        self.__max = [0] * vars_per_value
+        self.__min = [0] * vars_per_value
+        self.__values = []
 
     def __copy__(self):
         """
+        Returns:
+            An instance of the Accessor class with the same gl_type,
+            data_type, and vars_per_value this instance has.
         """
-        return Accessor(self.__gl_type, self.__data_type, self.__stride)
+        return Accessor(
+            self.__gl_type, self.__data_type, self.__vars_per_value
+        )
 
     def __repr__(self):
         """
@@ -95,7 +107,18 @@ class Accessor:
     def __str__(self):
         """
         """
-        return str(self.get_json())
+        return f"{self.get_json()}"
+
+    def add_values(self, values):
+        """
+        """
+        if len(self.__values) == 0:
+            self.__max = values
+            self.__min = values
+        else:
+            self.__max = [max(*j) for j in zip(self.__max, values)]
+            self.__min = [min(*k) for k in zip(self.__min, values)]
+        self.__values.extend(values)
 
     def get_buffer_view(self):
         """
@@ -105,7 +128,7 @@ class Accessor:
     def get_byte_length(self):
         """
         """
-        return self.get_byte_stride() * self.__count
+        return self.get_byte_stride() * self.get_count()
 
     def get_byte_offset(self):
         """
@@ -117,7 +140,7 @@ class Accessor:
         Returns:
             int of bytes this accessor takes up per set of data
         """
-        return self.get_component_type_stride() * self.__stride
+        return self.get_component_type_stride() * self.__vars_per_value
 
     def get_component_type(self):
         """
@@ -129,6 +152,11 @@ class Accessor:
         """
         return self.__gl_type_to_byte_count[self.__gl_type]
 
+    def get_count(self):
+        """
+        """
+        return int(len(self.__values) / self.__vars_per_value)
+
     def get_json(self):
         """
         Returns:
@@ -138,30 +166,26 @@ class Accessor:
             "bufferView": self.__buffer_view,
             "byteOffset": self.__byte_offset,
             "componentType": self.__gl_type,
-            "count": self.__count,
+            "count": self.get_count(),
             "max": self.__max,
             "min": self.__min,
             "type": self.__data_type
         }
 
-    def get_stride(self):
-        """
-        """
-        return self.__stride
-
     def get_struct_type(self):
         """
         """
-        if self.__gl_type in self.__gl_type_to_struct_type:
-            return self.__gl_type_to_struct_type[self.__gl_type]
-        return None
+        return self.__gl_type_to_struct_type[self.__gl_type]        
 
-    def new_value(self, values):
+    def get_values(self):
         """
         """
-        self.__count += 1
-        self.__max = [max(*j) for j in zip(self.__max, values)]
-        self.__min = [min(*k) for k in zip(self.__min, values)]
+        return self.__values
+
+    def get_vars_per_value(self):
+        """
+        """
+        return self.__vars_per_value
 
     def set_buffer_view(self, buffer_view):
         """
