@@ -1,8 +1,6 @@
 """
 TODO
-    - Accessor class methods comments and error checking
     - Duplicate Indices
-    - Normal/Texture
     - buffer view class?
         - Could have __accessed_by List for objects that use it
             (Accessors needs same)

@@ -6,6 +6,7 @@ bufferViews -> target (optional)
 34963   GL_ELEMENT_ARRAY_BUFFER
 """
 
+from collections import Counter
 import copy
 import json
 import struct
@@ -19,7 +20,6 @@ class Generator:
 
     __slots__ = [
         "__attribute_order", "__json", "__name",
-        "__temp_index"
         ]
 
     # Asset information
@@ -38,9 +38,6 @@ class Generator:
     }
 
     def __init__(self, name, attribute_order={"POSITION"}):
-
-        # Temp
-        self.__temp_index = 0
 
         # Set up Variables
         self.__json = {
@@ -171,7 +168,7 @@ class Generator:
             attribute_dict[attribute] = []
 
             # Expected attribute values end
-            end = start + attribute_accessor.get_vars_per_value()
+            end = start + attribute_accessor.get_element_length()
 
             # We have enough floats?
             if end > len(attribute_values):
@@ -186,8 +183,10 @@ class Generator:
             start = end
 
         # Do we have an indices entry for these values?
-        attribute_dict["indices"] = [self.__temp_index]
-        self.__temp_index += 1
+        attribute_dict_index = [self.__get_similar_index(attribute_dict)]
+        if len(attribute_dict_index) == 0:
+            attribute_dict_index = [10]
+        attribute_dict["indices"] = attribute_dict_index
 
         # Iterate
         for attribute, values in attribute_dict.items():
@@ -289,6 +288,27 @@ class Generator:
                 return i
         return -1
 
+    def __get_similar_index(self, attribute_dict):
+        """
+        """
+        similar_indexes = []
+        for attribute, values in attribute_dict.items():
+            if attribute in self.__json["meshes"][0]["primitives"][0]["attributes"]:
+                accessor = self.__json["accessors"][
+                    self.__json["meshes"][0]["primitives"][0]["attributes"][attribute]
+                ]
+                similar_indexes.extend(accessor.get_similar_value_indexes(values))
+
+        # This gets us an array of one Tuple.  This Tuple is in the format
+        # (index, count).  If the count is the same as the number of attributes
+        # we have, then we return that index.
+        most_common_index = Counter(similar_indexes).most_common(1)
+        if len(most_common_index) != 0 and most_common_index[0][1] == len(attribute_dict.keys()):
+            return most_common_index[0][0]
+
+        # Returns the length of our latest accessor.
+        return accessor.get_count()
+
     def __get_total_buffer_bytes(self):
         """
         Gets our total bytes in our buffer
@@ -313,8 +333,11 @@ class Generator:
         while current_bytes < self.__get_total_buffer_bytes():
             accessor = self.__get_accessor_by_bytes(current_bytes)
             current_bytes += accessor.get_byte_length()
-            pack_data.extend(accessor.get_values())
-            pack_info += accessor.get_struct_type() * len(accessor.get_values())
+            pack_data.extend(accessor.get_values_flattened())
+            pack_info += accessor.get_struct_type() * accessor.get_total_count()
+
+        # print(pack_data)
+        # print(pack_info)
 
         # Write our binary file
         with open(f"{self.__name}.bin", "wb") as outfile:
