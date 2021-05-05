@@ -16,6 +16,10 @@ from .accessor import Accessor
 
 class Generator:
     """
+    Parameters:
+        name, a string that will be used for storing the file and
+        set in meshes.
+        attribute_order, a 
     """
 
     __slots__ = [
@@ -131,7 +135,8 @@ class Generator:
 
     def __str__(self):
         """
-        Returns the GLTF Json in its current state.
+        Returns:
+            string of the GLTF Json in its current state.
         """
         return f"{self.__json}"
 
@@ -141,7 +146,7 @@ class Generator:
         the order of attributes we have.  This is handled
         in a single iteration of the order.
 
-        Args:
+        Parameters:
             attribute_values: a List or Tuple of floats
             that define the GL object.
 
@@ -183,10 +188,7 @@ class Generator:
             start = end
 
         # Do we have an indices entry for these values?
-        attribute_dict_index = [self.__get_similar_index(attribute_dict)]
-        if len(attribute_dict_index) == 0:
-            attribute_dict_index = [10]
-        attribute_dict["indices"] = attribute_dict_index
+        attribute_dict["indices"] = [self.__get_next_index(attribute_dict)]
 
         # Iterate
         for attribute, values in attribute_dict.items():
@@ -254,7 +256,10 @@ class Generator:
 
     def __get_accessor_by_bytes(self, desired_bytes):
         """
-        Returns the accessor at the given bytes.
+        Parameters:
+            int desired_bytes to find within our Accessors/BufferViews
+        Returns:
+            Accessor the accessor at the given bytes.
 
         This requires us to loop through our bufferViews and accessors that
         use those bufferViews.  Since the bufferView knows its byte range
@@ -280,16 +285,24 @@ class Generator:
 
     def __get_buffer_view_by_byte_stride(self, byte_stride):
         """
-        Given a byte stride, finds which Buffer View it belongs
-        to, if it already exists.
+        Parameters:
+            int a byte_stride
+        Returns:
+            int of the BufferView that has this stride in it, or -1
+            if we can't find one.
         """
         for i in range(0, len(self.__json["bufferViews"])):
             if self.__json["bufferViews"][i]["byteStride"] == byte_stride:
                 return i
         return -1
 
-    def __get_similar_index(self, attribute_dict):
+    def __get_next_index(self, attribute_dict):
         """
+        Parameters:
+            dict attribute/values pair of values being added.
+        Returns:
+            int of an index if we find the given values already, otherwise
+            the length of our existing accessor values length.
         """
         similar_indexes = []
         for attribute, values in attribute_dict.items():
@@ -311,7 +324,8 @@ class Generator:
 
     def __get_total_buffer_bytes(self):
         """
-        Gets our total bytes in our buffer
+        Returns:
+            int of bytes across all our BufferViews
         """
         total_bytes = 0
         for buffer_view in self.__json["bufferViews"]:
@@ -320,6 +334,8 @@ class Generator:
 
     def save(self, path):
         """
+        Parameters:
+            string path to where to store our gltf and bin file.
         """
 
         # Grab our Json/GLTF information
