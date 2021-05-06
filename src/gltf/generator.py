@@ -9,6 +9,7 @@ bufferViews -> target (optional)
 from collections import Counter
 import copy
 import json
+# import os
 import struct
 
 from .accessor import Accessor
@@ -19,7 +20,7 @@ class Generator:
     Parameters:
         name, a string that will be used for storing the file and
         set in meshes.
-        attribute_order, a 
+        attribute_order, a list of attributes in the order we parse their vals
     """
 
     __slots__ = [
@@ -337,6 +338,8 @@ class Generator:
         Parameters:
             string path to where to store our gltf and bin file.
         """
+
+        # os.path.join(dir_name, base_filename + "." + filename_suffix)
 
         # Grab our Json/GLTF information
         json_info = json.dumps(str(self.__json))
