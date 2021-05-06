@@ -247,6 +247,7 @@ class Accessor:
         Parameters:
             buffer_view sets our BufferView
         """
+        print(buffer_view)
         self.__buffer_view = buffer_view
 
     def set_byte_offset(self, byte_offset):

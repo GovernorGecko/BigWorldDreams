@@ -1,10 +1,7 @@
 """
 TODO
     - Python Path
-    - buffer view class?
-        - Could have __accessed_by List for objects that use it
-            (Accessors needs same)
-        - Could be in Accessor __buffer_view
+    - Can we split out Indices?
 
 i: 0, 1, 2, 1, 2, 3
 (0,1,0)
@@ -26,20 +23,20 @@ fout.close()
 """
 # import struct
 
-# from src.gltf.generator import Generator
+from src.gltf.generator import Generator
 # from src.gltf.accessor import Accessor
-from src.gltf.bufferview import BufferView
+# from src.gltf.bufferview import BufferView
 
-b = BufferView(0, 12, 1)
-print(b)
+# b = BufferView(0, 12, 1)
+# print(b)
 
 # a = Accessor(5126, "VEC3", 3)
 # print(a.get_byte_stride())
 # print(a)
 
-# g = Generator("test", ["POSITION", "TEXTURE", "NORMAL"])
-# g.add_attribute_sequence((0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0))
-# g.add_attribute_sequence((1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-# g.add_attribute_sequence((1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-# print(g)
-# g.save("test")
+g = Generator("test", ["POSITION", "TEXTURE", "NORMAL"])
+g.add_attribute_sequence((0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0))
+g.add_attribute_sequence((1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+g.add_attribute_sequence((1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+print(g)
+g.save("test")

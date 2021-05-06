@@ -38,6 +38,26 @@ class BufferView():
         """
         return f"{self.get_json()}"
 
+    def get_buffer(self):
+        """
+        """
+        return self.__buffer_index
+
+    def get_byte_length(self):
+        """
+        """
+        return self.__byte_length
+
+    def get_byte_offset(self):
+        """
+        """
+        return self.__byte_offset
+
+    def get_byte_stride(self):
+        """
+        """
+        return self.__byte_stride
+
     def get_json(self):
         """
         """
@@ -48,3 +68,18 @@ class BufferView():
             "byteStride": self.__byte_stride,
             "target": self.__target,
         }
+
+    def modify_byte_length(self, value):
+        """
+        """
+        self.__byte_length += value
+
+    def modify_byte_offset(self, value):
+        """
+        """
+        self.__byte_offset += value
+
+    def set_byte_offset(self, byte_offset):
+        """
+        """
+        self.__byte_offset = byte_offset

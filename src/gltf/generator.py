@@ -20,9 +20,7 @@ class Generator:
         attribute_order, a list of attributes in the order we parse their vals
     """
 
-    __slots__ = [
-        "__attribute_order", "__json", "__name",
-        ]
+    __slots__ = ["__attribute_order", "__json", "__name",]
 
     # Asset information
     __asset_information = {
@@ -197,15 +195,13 @@ class Generator:
             accessor.add_values(values)
 
             # Set up buffer view
-            buffer_view = self.__json["bufferViews"][
-                accessor.get_buffer_view()
-            ]
+            buffer_view = accessor.get_buffer_view()
 
             # If bufferView's byteOffset is None, then we set it
             # to the end of our existing byte total.
             # If both are None, we set our accessor to a byteOffset of 0.
-            if buffer_view["byteOffset"] is None:
-                buffer_view["byteOffset"] = self.__get_total_buffer_bytes()
+            if buffer_view.get_byte_offset() is None:
+                buffer_view.set_byte_offset(self.__get_total_buffer_bytes())
                 if accessor.get_byte_offset() is None:
                     accessor.set_byte_offset(0)
             else:
@@ -214,16 +210,16 @@ class Generator:
                 for o_buffer_view in self.__json["bufferViews"]:
                     if(
                         o_buffer_view != buffer_view and
-                        o_buffer_view["byteOffset"] is not None and
-                        o_buffer_view["buffer"] == buffer_view["buffer"] and
-                        o_buffer_view["byteOffset"] > buffer_view["byteOffset"]
+                        o_buffer_view.get_byte_offset() is not None and
+                        o_buffer_view.get_buffer() == buffer_view.get_buffer() and
+                        o_buffer_view.get_byte_offset() > buffer_view.get_byte_offset()
                     ):
-                        o_buffer_view["byteOffset"] += accessor.get_byte_stride()
+                        o_buffer_view.modify_byte_offset(accessor.get_byte_stride())
                 # Accessor doesn't have a byteOffset but the bufferView
                 # already has data it references, so set our accessor to the
                 # end of the bufferView.
                 if accessor.get_byte_offset() is None:
-                    accessor.set_byte_offset(buffer_view["byteLength"])
+                    accessor.set_byte_offset(buffer_view.get_byte_length())
                 # Our accessor has a byteOffset, meaning there could be other
                 # accessors using this bufferView.  We need to reach out to
                 # them and increment their byteOffset if they already have
@@ -239,7 +235,7 @@ class Generator:
                             o_accessor.set_byte_offset(accessor.get_byte_length())
 
             # Set bufferView byteLength
-            buffer_view["byteLength"] += accessor.get_byte_stride()
+            buffer_view.modify_byte_length(accessor.get_byte_stride())
 
         # Update our buffer size
         self.__json["buffers"][0]["byteLength"] = self.__get_total_buffer_bytes()
@@ -258,16 +254,15 @@ class Generator:
         many bytes each individual item in that range add.  This is imperitive
         since our buffer doesn't care about bytes in its base form.
         """
-        for buffer_view_index in range(0, len(self.__json["bufferViews"])):
-            buffer_view = self.__json["bufferViews"][buffer_view_index]
+        for buffer_view in self.__json["bufferViews"]:
             for accessor in self.__json["accessors"]:
                 if (
-                    buffer_view["byteOffset"] is not None and
+                    buffer_view.get_byte_offset() is not None and
                     accessor.get_byte_offset() is not None and
-                    accessor.get_buffer_view() == buffer_view_index and
+                    accessor.get_buffer_view() == buffer_view and
                     desired_bytes in range(
-                        buffer_view["byteOffset"] + accessor.get_byte_offset(),
-                        buffer_view["byteOffset"] + accessor.get_byte_offset() + accessor.get_byte_length()
+                        buffer_view.get_byte_offset() + accessor.get_byte_offset(),
+                        buffer_view.get_byte_offset() + accessor.get_byte_offset() + accessor.get_byte_length()
                     )
                 ):
                     return accessor
@@ -281,10 +276,10 @@ class Generator:
             int of the BufferView that has this stride in it, or -1
             if we can't find one.
         """
-        for i in range(0, len(self.__json["bufferViews"])):
-            if self.__json["bufferViews"][i]["byteStride"] == byte_stride:
-                return i
-        return -1
+        for buffer_view in self.__json["bufferViews"]:
+            if buffer_view.get_byte_stride() == byte_stride:
+                return buffer_view
+        return None
 
     def __get_next_index(self, attribute_dict):
         """
@@ -319,7 +314,7 @@ class Generator:
         """
         total_bytes = 0
         for buffer_view in self.__json["bufferViews"]:
-            total_bytes += buffer_view["byteLength"]
+            total_bytes += buffer_view.get_byte_length()
         return total_bytes
 
     def save(self, path):
