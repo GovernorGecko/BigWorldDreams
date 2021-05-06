@@ -1,9 +1,5 @@
 """
 A GLTF 2.0 Generator
-
-bufferViews -> target (optional)
-34962   GL_ARRAY_BUFFER
-34963   GL_ELEMENT_ARRAY_BUFFER
 """
 
 from collections import Counter
@@ -13,6 +9,7 @@ import json
 import struct
 
 from .accessor import Accessor
+from .bufferview import BufferView
 
 
 class Generator:
@@ -105,27 +102,19 @@ class Generator:
             accessor = copy.copy(self.__attribute_to_accessor[attribute])
 
             # Buffer Views
-            buffer_view_index = self.__get_buffer_view_by_byte_stride(
+            buffer_view = self.__get_buffer_view_by_byte_stride(
                 accessor.get_byte_stride()
             )
 
             # No index with this Stride?
             # Add it!
-            if buffer_view_index == -1:
+            if buffer_view is None:
                 target = 34963 if attribute == 'indices' else 34962
-                self.__json["bufferViews"].append(
-                    {
-                        "buffer": 0,
-                        "byteOffset": None,  # Signifies no data.
-                        "byteLength": 0,
-                        "byteStride": accessor.get_byte_stride(),
-                        "target": target
-                    }
-                )
-                buffer_view_index = len(self.__json["bufferViews"]) - 1
+                buffer_view = BufferView(0, accessor.get_byte_stride(), target)
+                self.__json["bufferViews"].append(buffer_view)
 
             # Accessor
-            accessor.set_buffer_view(buffer_view_index)
+            accessor.set_buffer_view(buffer_view)
             self.__json["accessors"].append(accessor)
 
             # Meshes
