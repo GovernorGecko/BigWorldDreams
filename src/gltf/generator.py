@@ -5,7 +5,7 @@ A GLTF 2.0 Generator
 from collections import Counter
 import copy
 import json
-# import os
+import os
 import struct
 
 from .accessor import Accessor
@@ -20,7 +20,7 @@ class Generator:
         attribute_order, a list of attributes in the order we parse their vals
     """
 
-    __slots__ = ["__attribute_order", "__json", "__name",]
+    __slots__ = ["__attribute_order", "__json", "__name"]
 
     # Asset information
     __asset_information = {
@@ -108,7 +108,11 @@ class Generator:
             # Add it!
             if buffer_view is None:
                 target = 34963 if attribute == 'indices' else 34962
-                buffer_view = BufferView(0, accessor.get_byte_stride(), target)
+                buffer_view = BufferView(
+                    0, accessor.get_byte_stride(),
+                    len(self.__json["bufferViews"]),
+                    target
+                )
                 self.__json["bufferViews"].append(buffer_view)
 
             # Accessor
@@ -323,11 +327,17 @@ class Generator:
             string path to where to store our gltf and bin file.
         """
 
-        # os.path.join(dir_name, base_filename + "." + filename_suffix)
+        json_as_string = str(self.__json).replace("'", '"')
+        str_as_json = json.loads(json_as_string)
+        # dict_as_json = json.loads(str(self.__json))
+        print(str_as_json)
+        print(json.dumps(str_as_json))
+        dict_as_json = json.dumps(json_as_string)
+        print(dict_as_json)
 
         # Grab our Json/GLTF information
         json_info = json.dumps(str(self.__json))
-        with open(f"{self.__name}.gltf", "w") as outfile:
+        with open(os.path.join(path, f"{self.__name}.gltf"), "w") as outfile:
             outfile.write(json_info.replace('"', '').replace("'", '"'))
 
         current_bytes = 0
@@ -343,5 +353,5 @@ class Generator:
         # print(pack_info)
 
         # Write our binary file
-        with open(f"{self.__name}.bin", "wb") as outfile:
+        with open(os.path.join(path, f"{self.__name}.bin"), "wb") as outfile:
             outfile.write(struct.pack(pack_info, *pack_data))

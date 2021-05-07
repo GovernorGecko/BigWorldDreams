@@ -102,7 +102,6 @@ class Accessor:
             __str__
         """
         return self.__str__()
-        # return json.dumps(self.get_json())
 
     def __str__(self):
         """
@@ -180,7 +179,7 @@ class Accessor:
             json accessor object
         """
         return {
-            "bufferView": self.__buffer_view,
+            "bufferView": self.__buffer_view.get_index(),
             "byteOffset": self.__byte_offset,
             "componentType": self.__gl_type,
             "count": self.get_count(),
@@ -247,7 +246,6 @@ class Accessor:
         Parameters:
             buffer_view sets our BufferView
         """
-        print(buffer_view)
         self.__buffer_view = buffer_view
 
     def set_byte_offset(self, byte_offset):

@@ -1,7 +1,9 @@
 """
 TODO
-    - Python Path
     - Can we split out Indices?
+    - Anything else that can move to Accessor/BufferView?
+    - Clean up Generator
+    - Can our GLTF print do json.loads and then dump?
 
 i: 0, 1, 2, 1, 2, 3
 (0,1,0)
@@ -38,5 +40,5 @@ g = Generator("test", ["POSITION", "TEXTURE", "NORMAL"])
 g.add_attribute_sequence((0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0))
 g.add_attribute_sequence((1.0, 1.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
 g.add_attribute_sequence((1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
-print(g)
-g.save("test")
+# print(g)
+g.save("assets")
