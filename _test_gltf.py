@@ -1,7 +1,4 @@
 """
-TODO
-    - Clean up Generator
-
 i: 0, 1, 2, 1, 2, 3
 (0,1,0)
 (1,0,0)

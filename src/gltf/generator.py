@@ -61,7 +61,8 @@ class Generator:
                         {
                             "attributes": {}
                         }
-                    ]
+                    ],
+                    "name": name
                 }
             ],
             "accessors": [],
