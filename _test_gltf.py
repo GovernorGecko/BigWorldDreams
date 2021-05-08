@@ -1,9 +1,6 @@
 """
 TODO
-    - Can we split out Indices?
-    - Anything else that can move to Accessor/BufferView?
     - Clean up Generator
-    - Can our GLTF print do json.loads and then dump?
 
 i: 0, 1, 2, 1, 2, 3
 (0,1,0)

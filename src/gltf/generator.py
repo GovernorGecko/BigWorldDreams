@@ -327,18 +327,12 @@ class Generator:
             string path to where to store our gltf and bin file.
         """
 
-        json_as_string = str(self.__json).replace("'", '"')
-        str_as_json = json.loads(json_as_string)
-        # dict_as_json = json.loads(str(self.__json))
-        print(str_as_json)
-        print(json.dumps(str_as_json))
-        dict_as_json = json.dumps(json_as_string)
-        print(dict_as_json)
-
         # Grab our Json/GLTF information
-        json_info = json.dumps(str(self.__json))
+        # json_info = json.dumps(str(self.__json).replace("'", '"'))
         with open(os.path.join(path, f"{self.__name}.gltf"), "w") as outfile:
-            outfile.write(json_info.replace('"', '').replace("'", '"'))
+            gltf_as_string = str(self.__json).replace("'", '"')
+            gltf_as_json = json.loads(gltf_as_string)
+            outfile.write(json.dumps(gltf_as_json, indent=4))
 
         current_bytes = 0
         pack_data = []
