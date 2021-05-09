@@ -12,12 +12,16 @@ class Chunk:
 
     # Value to divide each noise by to figure out how many blocks (meters)
     # high it is.
-    __block_height = 0.02
+    __block_height = 0.2
 
-    __slots__ = ["__height", "__height_data", "__vertex_data", "__width"]
+    __slots__ = [
+        "__height", "__height_data", "__minimum_height",
+        "__vertex_data", "__width"
+    ]
 
-    def __init__(self, height_data):
+    def __init__(self, height_data, minimum_height=0):
         self.__height_data = height_data
+        self.__minimum_height = minimum_height
         self.__vertex_data = []
 
         # Is height_data a 2d array?
@@ -41,8 +45,9 @@ class Chunk:
                     raise ValueError(
                         "height_data must be a 2d List of floats."
                     )
-                z = int(height_data[y][x] / self.__block_height)
-                self.__add_tile(x, y, z)
+                z_max = int((height_data[y][x] - minimum_height) / self.__block_height)
+                for z in range(z_max, -1, -1):
+                    self.__add_tile(x, y, z)
 
         # print(height_data)
         # print(self.__vertex_data)
@@ -55,13 +60,6 @@ class Chunk:
         self.__vertex_data.extend(
             self.__create_square(
                 x, y, z
-            )
-        )
-
-        # Side 1
-        self.__vertex_data.extend(
-            self.__create_square(
-                x, y, z, z_mod=-1
             )
         )
 

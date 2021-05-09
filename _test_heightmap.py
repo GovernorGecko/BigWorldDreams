@@ -15,9 +15,10 @@ size_x, size_y = 16, 16
 
 # Create the height data
 height_data = [[noise([i/size_x, j/size_y]) for j in range(size_x)] for i in range(size_y)]
+minimum_height = min(min(height_data))
 
 # Chunkkk!
-chunk = Chunk(height_data)
+chunk = Chunk(height_data, minimum_height)
 
 # Generator?
 generator = Generator("heightmap_test")
