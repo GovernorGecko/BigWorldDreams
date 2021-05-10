@@ -5,21 +5,13 @@ OpenGL Triangle
 
 class Triangle:
     """
+    Parameters:
+        [[float, float, float]] x 3 of vertices
     """
 
     __slots__ = ["__normals", "__vertices"]
 
     def __init__(self, vertices):
-        """
-        """
-        if (            
-            not isinstance(vertices, list) or
-            not isinstance(vertices[0], list)
-        ):
-            raise ValueError(
-                "Vertices must be a 2d List of floats."
-            )
-
         self.__vertices = vertices
 
         # Calculate Normals
@@ -27,11 +19,8 @@ class Triangle:
         So for a triangle p1, p2, p3, if the vector U = p2 - p1
         and the vector V = p3 - p1 then the normal N = U X V and
         can be calculated by:
-
         Nx = UyVz - UzVy
-
         Ny = UzVx - UxVz
-
         Nz = UxVy - UyVx
         """
         vector_U = [
@@ -52,12 +41,20 @@ class Triangle:
 
     def __str__(self):
         """
+        Returns:
+            string representation of our triangle.
         """
-        return str(self.__normals)
+        return str(self.__get_vertexes())
 
-    def get_vertexes(self, texture_vertices=[[0, 0], [1, 0], [1, 1]]):
+    def get_vertex_data(self, texture_vertices=[[0, 0], [1, 0], [1, 1]]):
         """
+        Parameters:
+            [[float, float]] x 3 texture vertices.
+        Returns:
+            [[float x 8]] x 3 vertexes of this triangle.
         """
-        return(
-            [*self.__vertices[0], *self.__normals, *texture_vertices[0]]
-        )
+        return[
+            [*self.__vertices[0], *self.__normals, *texture_vertices[0]],
+            [*self.__vertices[1], *self.__normals, *texture_vertices[1]],
+            [*self.__vertices[2], *self.__normals, *texture_vertices[2]]
+        ]

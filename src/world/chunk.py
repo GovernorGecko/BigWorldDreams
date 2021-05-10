@@ -4,7 +4,7 @@ chunk
 A chunk is a x by x by x mesh.
 """
 
-from .shapes.triangle import Triangle
+from .shapes.square import Square
 
 
 class Chunk:
@@ -17,14 +17,14 @@ class Chunk:
 
     __slots__ = [
         "__block_size", "__height_data", "__minimum_height", "__size",
-        "__vertex_data",
+        "__squares",
     ]
 
     def __init__(self, height_data, block_size=0.2, minimum_height=0.0):
         self.__block_size = block_size
         self.__height_data = height_data
         self.__minimum_height = minimum_height
-        self.__vertex_data = []
+        self.__squares = []
 
         # Is height_data a 2d array?
         if (
@@ -73,62 +73,71 @@ class Chunk:
         """
 
         # Top
-        self.__vertex_data.append([x, y, z])
-        self.__vertex_data.append([x + 1, y, z])
-        self.__vertex_data.append([x, y, z + 1])
-
-        self.__vertex_data.append([x + 1, y, z])
-        self.__vertex_data.append([x, y, z + 1])
-        self.__vertex_data.append([x + 1, y, z + 1])
+        self.__squares.append(
+            Square(
+                [x, y, z],
+                [x + 1, y, z],
+                [x, y, z + 1],
+                [x + 1, y, z + 1]
+            )
+        )
 
         # Side X+
-        self.__vertex_data.append([x + 1, y, z + 1])
-        self.__vertex_data.append([x + 1, y, z])
-        self.__vertex_data.append([x + 1, y - 1, z + 1])
-
-        self.__vertex_data.append([x + 1, y, z])
-        self.__vertex_data.append([x + 1, y - 1, z + 1])
-        self.__vertex_data.append([x + 1, y - 1, z])
+        self.__squares.append(
+            Square(
+                [x + 1, y, z + 1],
+                [x + 1, y, z],
+                [x + 1, y - 1, z + 1],
+                [x + 1, y - 1, z]
+            )
+        )
 
         # Side X= (or just X)
-        self.__vertex_data.append([x, y, z])
-        self.__vertex_data.append([x, y, z + 1])
-        self.__vertex_data.append([x, y - 1, z])
-
-        self.__vertex_data.append([x, y, z + 1])
-        self.__vertex_data.append([x, y - 1, z])
-        self.__vertex_data.append([x, y - 1, z + 1])
+        self.__squares.append(
+            Square(
+                [x, y, z],
+                [x, y, z + 1],
+                [x, y - 1, z],
+                [x, y - 1, z + 1]
+            )
+        )
 
         # Side Z+
-        self.__vertex_data.append([x, y, z + 1])
-        self.__vertex_data.append([x + 1, y, z + 1])
-        self.__vertex_data.append([x, y - 1, z + 1])
-
-        self.__vertex_data.append([x + 1, y, z + 1])
-        self.__vertex_data.append([x, y - 1, z + 1])
-        self.__vertex_data.append([x + 1, y - 1, z + 1])
+        self.__squares.append(
+            Square(
+                [x, y, z + 1],
+                [x + 1, y, z + 1],
+                [x, y - 1, z + 1],
+                [x + 1, y - 1, z + 1]
+            )
+        )
 
         # Side Z=
-        self.__vertex_data.append([x + 1, y, z])
-        self.__vertex_data.append([x, y, z])
-        self.__vertex_data.append([x + 1, y - 1, z])
-
-        self.__vertex_data.append([x, y, z])
-        self.__vertex_data.append([x + 1, y - 1, z])
-        self.__vertex_data.append([x, y - 1, z])
+        self.__squares.append(
+            Square(
+                [x + 1, y, z],
+                [x, y, z],
+                [x + 1, y - 1, z],
+                [x, y - 1, z]
+            )
+        )
 
         # Bottom
-        self.__vertex_data.append([x + 1, y - 1, z])
-        self.__vertex_data.append([x, y - 1, z])
-        self.__vertex_data.append([x + 1, y - 1, z + 1])
-
-        self.__vertex_data.append([x, y - 1, z])
-        self.__vertex_data.append([x + 1, y - 1, z + 1])
-        self.__vertex_data.append([x, y - 1, z + 1])
+        self.__squares.append(
+            Square(
+                [x + 1, y - 1, z],
+                [x, y - 1, z],
+                [x + 1, y - 1, z + 1],
+                [x, y - 1, z + 1]
+            )
+        )
 
     def get_vertex_data(self):
         """
         Returns:
             [[float, ...]] of vertex data.
         """
-        return self.__vertex_data
+        vertex_data = []
+        for s in self.__squares:
+            vertex_data.extend(s.get_vertex_data())
+        return vertex_data
