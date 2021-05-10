@@ -34,9 +34,9 @@
             "bufferView": 0,
             "byteOffset": 0,
             "componentType": 5123,
-            "count": 3456,
+            "count": 20736,
             "max": [
-                3455
+                20708
             ],
             "min": [
                 0
@@ -47,7 +47,7 @@
             "bufferView": 1,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 3456,
+            "count": 20736,
             "max": [
                 16,
                 2,
@@ -55,7 +55,7 @@
             ],
             "min": [
                 0,
-                0,
+                -1,
                 0
             ],
             "type": "VEC3"
@@ -64,22 +64,22 @@
     "bufferViews": [
         {
             "buffer": 0,
-            "byteOffset": 41472,
-            "byteLength": 6912,
+            "byteOffset": 248832,
+            "byteLength": 41472,
             "byteStride": 2,
             "target": 34963
         },
         {
             "buffer": 0,
             "byteOffset": 0,
-            "byteLength": 41472,
+            "byteLength": 248832,
             "byteStride": 12,
             "target": 34962
         }
     ],
     "buffers": [
         {
-            "byteLength": 48384,
+            "byteLength": 290304,
             "uri": "heightmap_test.bin"
         }
     ]

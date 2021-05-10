@@ -4,30 +4,39 @@ Perlin Noise Learning/Tests
 
 from perlin_noise import PerlinNoise
 
-from src.world.chunk import Chunk
 from src.gltf.generator import Generator
+from src.world.chunk import Chunk
+from src.world.shapes.triangle import Triangle
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
 
 # Size of our Chunk
-size_x, size_y = 16, 16
+size = 16
 
 # Create the height data
-height_data = [[noise([i/size_x, j/size_y]) for j in range(size_x)] for i in range(size_y)]
+height_data = [[noise([i/size, j/size]) for j in range(size)] for i in range(size)]
 minimum_height = min(min(height_data))
 
 # Chunkkk!
-chunk = Chunk(height_data, minimum_height)
+chunk = Chunk(height_data, minimum_height=minimum_height)
 
 # Generator?
 generator = Generator("heightmap_test")
 
-for vertices in chunk.get_vertex_data():
-    generator.add_attribute_sequence(vertices)
+# for vertices in chunk.get_vertex_data():
+    # generator.add_attribute_sequence(vertices)
 
-generator.save("assets")
+# generator.save("assets")
 
+t = Triangle(
+    [
+        [1, 1, 1],
+        [1, 1, 0],
+        [1, 0, 1],
+    ]
+)
+print(t.get_vertexes())
 
 """
 import matplotlib.pyplot as plt

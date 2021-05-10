@@ -1,4 +1,3 @@
-- Cube in Chunk.py
 - Test Chunk in Unity
 - Find unnecessary triangles in Chunk.py
 - HeightMap Class
