@@ -22,8 +22,7 @@
                 {
                     "attributes": {
                         "POSITION": 1,
-                        "NORMAL": 2,
-                        "TEXTURE": 3
+                        "NORMAL": 2
                     },
                     "indices": 0
                 }
@@ -36,9 +35,9 @@
             "bufferView": 0,
             "byteOffset": 0,
             "componentType": 5123,
-            "count": 20736,
+            "count": 18,
             "max": [
-                20735
+                16
             ],
             "min": [
                 0
@@ -49,11 +48,11 @@
             "bufferView": 1,
             "byteOffset": 0,
             "componentType": 5126,
-            "count": 20736,
+            "count": 18,
             "max": [
-                16,
-                2,
-                16
+                1,
+                0,
+                2
             ],
             "min": [
                 0,
@@ -64,63 +63,40 @@
         },
         {
             "bufferView": 1,
-            "byteOffset": 248832,
+            "byteOffset": 216,
             "componentType": 5126,
-            "count": 20736,
+            "count": 18,
             "max": [
-                1,
-                1,
-                1
-            ],
-            "min": [
-                -1,
-                -1,
-                -1
-            ],
-            "type": "VEC3"
-        },
-        {
-            "bufferView": 2,
-            "byteOffset": 0,
-            "componentType": 5126,
-            "count": 20736,
-            "max": [
+                0,
                 1,
                 1
             ],
             "min": [
                 0,
+                0,
                 0
             ],
-            "type": "VEC2"
+            "type": "VEC3"
         }
     ],
     "bufferViews": [
         {
             "buffer": 0,
-            "byteOffset": 663552,
-            "byteLength": 41472,
-            "byteStride": 2,
+            "byteOffset": 432,
+            "byteLength": 36,
             "target": 34963
         },
         {
             "buffer": 0,
             "byteOffset": 0,
-            "byteLength": 497664,
-            "byteStride": 12,
-            "target": 34962
-        },
-        {
-            "buffer": 0,
-            "byteOffset": 497664,
-            "byteLength": 165888,
-            "byteStride": 8,
-            "target": 34962
+            "byteLength": 432,
+            "target": 34962,
+            "byteStride": 12
         }
     ],
     "buffers": [
         {
-            "byteLength": 705024,
+            "byteLength": 468,
             "uri": "heightmap_test.bin"
         }
     ]

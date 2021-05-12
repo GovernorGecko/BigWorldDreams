@@ -54,7 +54,7 @@ class Triangle:
             [[float x 8]] x 3 vertexes of this triangle.
         """
         return[
-            [*self.__vertices[0], *self.__normals, *texture_vertices[0]],
-            [*self.__vertices[1], *self.__normals, *texture_vertices[1]],
-            [*self.__vertices[2], *self.__normals, *texture_vertices[2]]
+            [*self.__vertices[0], *self.__normals],  # *texture_vertices[0]],
+            [*self.__vertices[1], *self.__normals],  # *texture_vertices[1]],
+            [*self.__vertices[2], *self.__normals],  # *texture_vertices[2]]
         ]

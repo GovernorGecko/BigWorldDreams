@@ -1,4 +1,9 @@
-- Test Chunk in Unity
 - Find unnecessary triangles in Chunk.py
-- HeightMap Class
+    - Only outside vertices?
+- Test Chunk in Unity
+    - side collision isn't working
 - Clean up Generator
+- HeightMap Class
+- Colors for Generator
+- Smaller tiles?
+- GLTF Textures are more involved.  Use TEXCOORD_<n>

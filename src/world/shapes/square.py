@@ -29,12 +29,13 @@ class Square:
         self.__bottom_right = bottom_right
 
         # Create our Triangles
+        # Using CCW
         self.__triangles = []
         self.__triangles.append(Triangle(
-            [top_left, top_right, bottom_left]
+            [top_right, top_left, bottom_left]
         ))
         self.__triangles.append(Triangle(
-            [top_right, bottom_left, bottom_right]
+            [bottom_left, bottom_right, top_right]
         ))
 
     def __str__(self):

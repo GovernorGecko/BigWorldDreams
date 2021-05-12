@@ -88,13 +88,15 @@ class BufferView():
         Returns:
             Json object of our data
         """
-        return {
+        json = {
             "buffer": self.__buffer_index,
             "byteOffset": self.__byte_offset,
-            "byteLength": self.__byte_length,
-            "byteStride": self.__byte_stride,
+            "byteLength": self.__byte_length,            
             "target": self.__target,
         }
+        if self.__byte_stride > 2:
+            json["byteStride"] = self.__byte_stride
+        return json
 
     def modify_byte_length(self, value):
         """
