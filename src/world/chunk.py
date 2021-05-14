@@ -4,7 +4,7 @@ chunk
 A chunk is a x by x by x mesh.
 """
 
-from .shapes.square import Square
+from .geometry.square import Square
 
 
 class Chunk:

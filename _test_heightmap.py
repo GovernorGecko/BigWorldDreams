@@ -5,8 +5,9 @@ Perlin Noise Learning/Tests
 from perlin_noise import PerlinNoise
 
 from src.gltf.generator import Generator
-from src.world.chunk import Chunk
-from src.world.shapes.square import Square
+# from src.world.chunk import Chunk
+from src.world.geometry.square import Square
+from src.world.geometry.vector3 import Vector3
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -31,24 +32,24 @@ minimum_height = min(min(height_data))
 # generator.save("assets")
 
 s1 = Square(
-    [0, 0, 0],
-    [1, 0, 0],
-    [0, 0, 1],
-    [1, 0, 1]
+    Vector3([0, 0, 0]),
+    Vector3([1, 0, 0]),
+    Vector3([0, 0, 1]),
+    Vector3([1, 0, 1])
 )
 
 s2 = Square(
-    [0, 0, 1],
-    [1, 0, 1],
-    [0, -1, 1],
-    [1, -1, 1]
+    Vector3([0, 0, 1]),
+    Vector3([1, 0, 1]),
+    Vector3([0, -1, 1]),
+    Vector3([1, -1, 1])
 )
 
 s3 = Square(
-    [0, -1, 1],
-    [1, -1, 1],
-    [0, -1, 2],
-    [1, -1, 2]
+    Vector3([0, -1, 1]),
+    Vector3([1, -1, 1]),
+    Vector3([0, -1, 2]),
+    Vector3([1, -1, 2])
 )
 
 # Generator?

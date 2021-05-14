@@ -1,7 +1,6 @@
 - Find unnecessary triangles in Chunk.py
     - Only outside vertices?
-- Test Chunk in Unity
-    - side collision isn't working
+    - Iterate our Squares, removing facing that are exact same
 - Clean up Generator
 - HeightMap Class
 - Colors for Generator
