@@ -30,7 +30,7 @@ class Vector3():
         Returns:
             str of X, Y, Z values.
         """
-        return f"{self.X} {self.Y} {self.Z}"
+        return f"{self.X}, {self.Y}, {self.Z}"
 
     def __eq__(self, other):
         """

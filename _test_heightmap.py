@@ -5,7 +5,7 @@ Perlin Noise Learning/Tests
 from perlin_noise import PerlinNoise
 
 from src.gltf.generator import Generator
-# from src.world.chunk import Chunk
+from src.world.chunk import Chunk
 from src.world.geometry.square import Square
 from src.world.geometry.triangle import Triangle
 from src.world.geometry.vector3 import Vector3
@@ -45,6 +45,8 @@ t2 = Triangle(
 )
 
 print(t1.is_like(t2))
+d = t1.get_vertex_data()
+print(d)
 
 """
 s1 = Square(

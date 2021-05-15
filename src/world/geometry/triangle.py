@@ -11,11 +11,11 @@ class Triangle:
         [[float, float, float]] x 3 of vertices
     """
 
-    __slots__ = ["__colors", "__normals", "__points", "__texcoords"]
+    __slots__ = ["__colors", "__normals", "__texcoords", "__vertices"]
 
     def __init__(self, *args):
         self.__colors = []
-        self.__points = []
+        self.__vertices = []
         self.__texcoords = []
 
         if isinstance(args[0], (list, tuple)):
@@ -25,7 +25,7 @@ class Triangle:
         elif len(args) == 3:
             self.__set(*args)
         else:
-            raise ValueError("Didn't receive at least three Vector3s")
+            raise ValueError("Didn't receive at least three vertices.")
 
         # Calculate Normals
         """
@@ -36,12 +36,12 @@ class Triangle:
         Ny = UzVx - UxVz
         Nz = UxVy - UyVx
         """
-        vector_U = self.__points[1] - self.__points[0]
-        vector_V = self.__points[2] - self.__points[0]
+        vertex_U = self.__vertices[1] - self.__vertices[0]
+        vertex_V = self.__vertices[2] - self.__vertices[0]
         self.__normals = Vector3(
-            (vector_U.Y * vector_V.Z) - (vector_U.Z * vector_V.Y),
-            (vector_U.Z * vector_V.X) - (vector_U.X * vector_V.Z),
-            (vector_U.X * vector_V.Y) - (vector_U.Y * vector_V.X),
+            (vertex_U.Y * vertex_V.Z) - (vertex_U.Z * vertex_V.Y),
+            (vertex_U.Z * vertex_V.X) - (vertex_U.X * vertex_V.Z),
+            (vertex_U.X * vertex_V.Y) - (vertex_U.Y * vertex_V.X),
         )
 
     def __str__(self):
@@ -51,42 +51,48 @@ class Triangle:
         """
         return str(self.__get_vertex_data())
 
-    def __set(self, point_1, point_2, point_3):
+    def __set(self, vertex_1, vertex_2, vertex_3):
         """
+        Parameters:
+            Vector3, Vector3, Vector3
         """
-        if not all(isinstance(i, Vector3) for i in [point_1, point_2, point_3]):
+        if not all(
+            isinstance(i, Vector3) for i in [vertex_1, vertex_2, vertex_3]
+        ):
             raise ValueError("Didn't receive at least three Vector3s")
-        self.__points.append(point_1)
-        self.__points.append(point_2)
-        self.__points.append(point_3)
+        self.__vertices.append(vertex_1)
+        self.__vertices.append(vertex_2)
+        self.__vertices.append(vertex_3)
 
     def get_vertex_data(self):
         """
-        Parameters:
-            [[float, float]] x 3 texture vertices.
         Returns:
-            [[float x 8]] x 3 vertexes of this triangle.
+            [[float x 6]] x 3 vertexes of this triangle.
         """
-        return[
-            [*self.__points[0].get_values(), *self.__normals.get_values()],
-            [*self.__points[1].get_values(), *self.__normals.get_values()],
-            [*self.__points[2].get_values(), *self.__normals.get_values()],
+        return [
+            [
+                *v.get_values(), *self.__normals.get_values()
+            ] for v in self.__vertices
         ]
 
-    def has_vertices(self, vertices):
+    def has_vertex(self, vertex):
         """
+        Parameters:
+            Vector3
+        Returns:
+            bool of whether the given Vector3 matches one of ours.
         """
-        if not isinstance(vertices, Vector3):
+        if not isinstance(vertex, Vector3):
             return False
-        return vertices in self.__points
+        return vertex in self.__vertices
 
     def is_like(self, other):
         """
+        Parameters:
+            Triangle
+        Returns:
+            bool of whether both triangles have the same vertexes.
         """
         if not isinstance(other, Triangle):
             return False
-        return (
-            other.has_vertices(self.__points[0]) and
-            other.has_vertices(self.__points[1]) and
-            other.has_vertices(self.__points[2])
-        )
+        return all(other.has_vertex(v) for v in self.__vertices)
