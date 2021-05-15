@@ -132,6 +132,11 @@ class Chunk:
             )
         )
 
+    def clean(self):
+        """
+        """
+        print("hi")
+
     def get_vertex_data(self):
         """
         Returns:

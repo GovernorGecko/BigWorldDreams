@@ -11,19 +11,21 @@ class Triangle:
         [[float, float, float]] x 3 of vertices
     """
 
-    __slots__ = ["__colors", "__normals", "__texcoords", "__vertices"]
+    __slots__ = ["__colors", "__normals", "__points", "__texcoords"]
 
-    def __init__(self, vertices, colors=[], textcoords=[]):
+    def __init__(self, *args):
+        self.__colors = []
+        self.__points = []
+        self.__texcoords = []
 
-        if len(vertices) < 3:
-            raise ValueError("Must have at least 3 Vector3s.")
-        for v in vertices:
-            if not isinstance(v, Vector3):
-                raise ValueError("Must pass Vector3.")
-
-        self.__colors = colors
-        self.__texcoords = textcoords
-        self.__vertices = vertices
+        if isinstance(args[0], (list, tuple)):
+            if len(args[0]) < 3:
+                raise ValueError("List or Tuple must be at least 3 values.")
+            self.__set(*args[0])
+        elif len(args) == 3:
+            self.__set(*args)
+        else:
+            raise ValueError("Didn't receive at least three Vector3s")
 
         # Calculate Normals
         """
@@ -34,8 +36,8 @@ class Triangle:
         Ny = UzVx - UxVz
         Nz = UxVy - UyVx
         """
-        vector_U = vertices[1] - vertices[0]
-        vector_V = vertices[2] - vertices[0]
+        vector_U = self.__points[1] - self.__points[0]
+        vector_V = self.__points[2] - self.__points[0]
         self.__normals = Vector3(
             (vector_U.Y * vector_V.Z) - (vector_U.Z * vector_V.Y),
             (vector_U.Z * vector_V.X) - (vector_U.X * vector_V.Z),
@@ -49,6 +51,15 @@ class Triangle:
         """
         return str(self.__get_vertex_data())
 
+    def __set(self, point_1, point_2, point_3):
+        """
+        """
+        if not all(isinstance(i, Vector3) for i in [point_1, point_2, point_3]):
+            raise ValueError("Didn't receive at least three Vector3s")
+        self.__points.append(point_1)
+        self.__points.append(point_2)
+        self.__points.append(point_3)
+
     def get_vertex_data(self):
         """
         Parameters:
@@ -57,7 +68,25 @@ class Triangle:
             [[float x 8]] x 3 vertexes of this triangle.
         """
         return[
-            [*self.__vertices[0].get_values(), *self.__normals.get_values()],
-            [*self.__vertices[1].get_values(), *self.__normals.get_values()],
-            [*self.__vertices[2].get_values(), *self.__normals.get_values()],
+            [*self.__points[0].get_values(), *self.__normals.get_values()],
+            [*self.__points[1].get_values(), *self.__normals.get_values()],
+            [*self.__points[2].get_values(), *self.__normals.get_values()],
         ]
+
+    def has_vertices(self, vertices):
+        """
+        """
+        if not isinstance(vertices, Vector3):
+            return False
+        return vertices in self.__points
+
+    def is_like(self, other):
+        """
+        """
+        if not isinstance(other, Triangle):
+            return False
+        return (
+            other.has_vertices(self.__points[0]) and
+            other.has_vertices(self.__points[1]) and
+            other.has_vertices(self.__points[2])
+        )
