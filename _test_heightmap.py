@@ -41,10 +41,10 @@ t1 = Triangle(
 t2 = Triangle(
     Vector3(1, 1, 1),
     Vector3(1, 0, 1),
-    Vector3(0, 0, 0)
+    Vector3(0, 0, 1)
 )
 
-print(t1.is_like(t2))
+print(t1 == t2)
 d = t1.get_vertex_data()
 print(d)
 

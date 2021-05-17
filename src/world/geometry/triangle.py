@@ -51,6 +51,17 @@ class Triangle:
         """
         return str(self.__get_vertex_data())
 
+    def __eq__(self, other):
+        """
+        Parameters:
+            Triangle
+        Returns:
+            bool of whether both triangles have the same vertexes.
+        """
+        if not isinstance(other, Triangle):
+            return False
+        return all(other.has_vertex(v) for v in self.__vertices)
+
     def __set(self, vertex_1, vertex_2, vertex_3):
         """
         Parameters:
@@ -85,14 +96,3 @@ class Triangle:
         if not isinstance(vertex, Vector3):
             return False
         return vertex in self.__vertices
-
-    def is_like(self, other):
-        """
-        Parameters:
-            Triangle
-        Returns:
-            bool of whether both triangles have the same vertexes.
-        """
-        if not isinstance(other, Triangle):
-            return False
-        return all(other.has_vertex(v) for v in self.__vertices)
