@@ -1,5 +1,11 @@
 """
 OpenGL Triangle
+This is the base for 3D.  It is made up of three Vertexes that
+can contain up to four attributes each.
+Position, required, a Vector3
+Normal, calculated, a Vector3
+TexCoord, optional, a Vector2
+Color, optional, a Vector3
 """
 
 from .vector3 import Vector3
@@ -7,25 +13,22 @@ from .vector3 import Vector3
 
 class Triangle:
     """
-    Parameters:
-        [[float, float, float]] x 3 of vertices
     """
 
-    __slots__ = ["__colors", "__normals", "__texcoords", "__vertices"]
+    __slots__ = ["__colors", "__normals", "__positions", "__texcoords"]
 
-    def __init__(self, *args):
-        self.__colors = []
-        self.__vertices = []
-        self.__texcoords = []
+    def __init__(self, positions, colors=None, texcoords=None):
+        self.__colors = colors
+        self.__texcoords = texcoords
 
-        if isinstance(args[0], (list, tuple)):
-            if len(args[0]) < 3:
-                raise ValueError("List or Tuple must be at least 3 values.")
-            self.__set(*args[0])
-        elif len(args) == 3:
-            self.__set(*args)
+        # Expecting three Vector3s
+        if (
+            isinstance(positions, list) and len(positions) == 3 and
+            all(isinstance(p, Vector3) for p in positions)
+        ):
+            self.__positions = positions
         else:
-            raise ValueError("Didn't receive at least three vertices.")
+            raise ValueError("Expecting a List or Tuple of floats/Vector3s.")
 
         # Calculate Normals
         """
@@ -36,12 +39,12 @@ class Triangle:
         Ny = UzVx - UxVz
         Nz = UxVy - UyVx
         """
-        vertex_U = self.__vertices[1] - self.__vertices[0]
-        vertex_V = self.__vertices[2] - self.__vertices[0]
+        position_U = self.__positions[1] - self.__positions[0]
+        position_V = self.__positions[2] - self.__positions[0]
         self.__normals = Vector3(
-            (vertex_U.Y * vertex_V.Z) - (vertex_U.Z * vertex_V.Y),
-            (vertex_U.Z * vertex_V.X) - (vertex_U.X * vertex_V.Z),
-            (vertex_U.X * vertex_V.Y) - (vertex_U.Y * vertex_V.X),
+            (position_U.Y * position_V.Z) - (position_U.Z * position_V.Y),
+            (position_U.Z * position_V.X) - (position_U.X * position_V.Z),
+            (position_U.X * position_V.Y) - (position_U.Y * position_V.X),
         )
 
     def __str__(self):
@@ -60,20 +63,7 @@ class Triangle:
         """
         if not isinstance(other, Triangle):
             return False
-        return all(other.has_vertex(v) for v in self.__vertices)
-
-    def __set(self, vertex_1, vertex_2, vertex_3):
-        """
-        Parameters:
-            Vector3, Vector3, Vector3
-        """
-        if not all(
-            isinstance(i, Vector3) for i in [vertex_1, vertex_2, vertex_3]
-        ):
-            raise ValueError("Didn't receive at least three Vector3s")
-        self.__vertices.append(vertex_1)
-        self.__vertices.append(vertex_2)
-        self.__vertices.append(vertex_3)
+        return all(other.has_position(p) for p in self.__positions)
 
     def get_vertex_data(self):
         """
@@ -81,18 +71,17 @@ class Triangle:
             [[float x 6]] x 3 vertexes of this triangle.
         """
         return [
-            [
-                *v.get_values(), *self.__normals.get_values()
-            ] for v in self.__vertices
+            [*p.get_values(), *self.__normals.get_values()]
+            for p in self.__positions
         ]
 
-    def has_vertex(self, vertex):
+    def has_position(self, position):
         """
         Parameters:
             Vector3
         Returns:
             bool of whether the given Vector3 matches one of ours.
         """
-        if not isinstance(vertex, Vector3):
+        if not isinstance(position, Vector3):
             return False
-        return vertex in self.__vertices
+        return position in self.__positions

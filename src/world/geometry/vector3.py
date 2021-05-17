@@ -1,3 +1,8 @@
+"""
+Vector3
+"""
+
+
 class Vector3():
     """
     Parameters:
@@ -10,8 +15,8 @@ class Vector3():
         self.__set(0.0, 0.0, 0.0)
 
         if isinstance(args[0], (list, tuple)):
-            if len(args[0]) < 3:
-                raise ValueError("List or Tuple must be at least 3 values.")
+            if len(args[0]) != 3:
+                raise ValueError("List or Tuple must be 3 values.")
             self.__set(*args[0])
         elif len(args) == 3:
             self.__set(*args)
