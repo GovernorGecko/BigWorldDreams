@@ -27,20 +27,14 @@ class Chunk:
         self.__minimum_height = minimum_height
         self.__triangles = []
 
-        # Is height_data a 2d array?
+        # Is height_data a 2d array of the same length/width?
         if (
             not isinstance(height_data, list) or
-            not isinstance(height_data[0], list)
-        ):
-            raise ValueError(
-                "height_data must be a 2d List of floats."
-            )
-        # We have the same width/height?
-        elif(
+            not isinstance(height_data[0], list) or 
             len(height_data) != len(height_data[0])
         ):
             raise ValueError(
-                "height_data must be be of equal size for x/y."
+                "height_data must be a 2d List of Floats of the same length."
             )
 
         # Set Chunk Size
@@ -52,23 +46,23 @@ class Chunk:
             for x in range(0, self.__size):
                 if not isinstance(height_data[y][x], float):
                     raise ValueError(
-                        "height_data must be a 2d List of floats."
+                        "height_data must be a 2d List of Floats."
                     )
                 z_max = int(
                     (height_data[y][x] - minimum_height) / self.__block_size
                 )
                 for z in range(z_max, -1, -1):
-                    self.__add_tile(x, y, z)
+                    self.__add_tile(x, z, y)
 
         # Debug Information
         print(
             f"Created a Chunk of {self.__size}x{self.__size}x{self.__size}"
         )
 
-    def __add_tile(self, x, z, y):
+    def __add_tile(self, x, y, z):
         """
         Parameters:
-            int x positiono of the tile
+            int x position of the tile
             int z position of the tile
             int y position of the tile
         """

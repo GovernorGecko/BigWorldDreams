@@ -6,8 +6,8 @@ from perlin_noise import PerlinNoise
 
 from src.gltf.generator import Generator
 from src.world.chunk import Chunk
-from src.world.geometry.triangle import Triangle
-from src.world.geometry.vector3 import Vector3
+# from src.world.geometry.triangle import Triangle
+# from src.world.geometry.vector3 import Vector3
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -16,7 +16,9 @@ noise = PerlinNoise(octaves=1, seed=1)
 size = 2
 
 # Create the height data
-height_data = [[noise([i/size, j/size]) for j in range(size)] for i in range(size)]
+height_data = [
+    [noise([i/size, j/size]) for j in range(size)] for i in range(size)
+]
 minimum_height = min(min(height_data))
 
 # Chunkkk!
