@@ -4,10 +4,15 @@ Perlin Noise Learning/Tests
 
 from perlin_noise import PerlinNoise
 
-from src.gltf.generator import Generator
-from src.world.chunk import Chunk
+# from src.gltf.generator import Generator
+# from src.world.chunk import Chunk
 # from src.world.geometry.triangle import Triangle
-# from src.world.geometry.vector3 import Vector3
+from src.world.geometry.vector3 import Vector3
+from src.world.geometry.cube import Cube
+
+c = Cube(Vector3(1, 1, 1))
+
+"""
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -32,6 +37,8 @@ for vertices in chunk.get_vertex_data():
     generator.add_attribute_sequence(vertices)
 
 generator.save("assets")
+
+"""
 
 """
 

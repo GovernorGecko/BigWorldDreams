@@ -47,12 +47,19 @@ class Triangle:
             (position_U.X * position_V.Y) - (position_U.Y * position_V.X),
         )
 
+    def __repr__(self):
+        """
+        Returns:
+            __str__
+        """
+        return self.__str__()
+
     def __str__(self):
         """
         Returns:
             string representation of our triangle.
         """
-        return str(self.__get_vertex_data())
+        return str(self.get_vertex_data())
 
     def __eq__(self, other):
         """

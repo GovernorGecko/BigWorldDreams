@@ -79,6 +79,23 @@ class Vector3():
         """
         return [self.X, self.Y, self.Z]
 
+    def offset(self, x=0.0, y=0.0, z=0.0):
+        """
+        Parameters:
+            float x offset
+            float y offset
+            float z offset
+        Returns:
+            Vector3 instance, given the offsets.
+        """
+        if (
+            not isinstance(x, (float, int)) or
+            not isinstance(y, (float, int)) or
+            not isinstance(z, (float, int))
+        ):
+            return Vector3()
+        return Vector3(self.X + x, self.Y + y, self.Z + z)
+
     @property
     def X(self):
         """
