@@ -6,16 +6,8 @@ from perlin_noise import PerlinNoise
 
 from src.gltf.generator import Generator
 from src.world.chunk import Chunk
-from src.world.geometry.cube import Cube
-from src.world.geometry.square import Square
 from src.world.geometry.triangle import Triangle
 from src.world.geometry.vector3 import Vector3
-
-"""
-
-cube = Cube()
-
-"""
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -57,40 +49,6 @@ print(t1 == t2)
 d = t1.get_vertex_data()
 print(d)
 
-"""
-
-"""
-
-s1 = Square(
-    Vector3([0, 0, 0]),
-    Vector3([1, 0, 0]),
-    Vector3([0, 0, 1]),
-    Vector3([1, 0, 1])
-)
-
-s2 = Square(
-    Vector3([0, 0, 1]),
-    Vector3([1, 0, 1]),
-    Vector3([0, -1, 1]),
-    Vector3([1, -1, 1])
-)
-
-s3 = Square(
-    Vector3([0, -1, 1]),
-    Vector3([1, -1, 1]),
-    Vector3([0, -1, 2]),
-    Vector3([1, -1, 2])
-)
-
-# Generator?
-generator = Generator("heightmap_test", ["POSITION", "NORMAL"])
-for s in s1.get_vertex_data():
-    generator.add_attribute_sequence(s)
-for s in s2.get_vertex_data():
-    generator.add_attribute_sequence(s)
-for s in s3.get_vertex_data():
-    generator.add_attribute_sequence(s)
-generator.save("assets")
 """
 
 """

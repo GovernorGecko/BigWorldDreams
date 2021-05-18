@@ -4,7 +4,8 @@ chunk
 A chunk is a x by x by x mesh.
 """
 
-from .geometry.square import Square
+from .geometry.triangle import Triangle
+from .geometry.vector3 import Vector3
 
 
 class Chunk:
@@ -17,14 +18,14 @@ class Chunk:
 
     __slots__ = [
         "__block_size", "__height_data", "__minimum_height", "__size",
-        "__squares",
+        "__triangles",
     ]
 
     def __init__(self, height_data, block_size=0.2, minimum_height=0.0):
         self.__block_size = block_size
         self.__height_data = height_data
         self.__minimum_height = minimum_height
-        self.__squares = []
+        self.__triangles = []
 
         # Is height_data a 2d array?
         if (
@@ -73,15 +74,22 @@ class Chunk:
         """
 
         # Top
-        self.__squares.append(
-            Square(
-                [x, y, z],
-                [x + 1, y, z],
-                [x, y, z + 1],
-                [x + 1, y, z + 1]
-            )
+        self.__triangles.append(
+            Triangle([
+                Vector3([x + 1, y, z]),
+                Vector3([x, y, z]),
+                Vector3([x, y, z + 1])
+            ])
+        )
+        self.__triangles.append(
+            Triangle([
+                Vector3([x, y, z + 1]),
+                Vector3([x + 1, y, z + 1]),
+                Vector3([x + 1, y, z])
+            ])
         )
 
+        """
         # Side X+
         self.__squares.append(
             Square(
@@ -131,6 +139,7 @@ class Chunk:
                 [x, y - 1, z + 1]
             )
         )
+        """
 
     def clean(self):
         """
@@ -143,6 +152,6 @@ class Chunk:
             [[float, ...]] of vertex data.
         """
         vertex_data = []
-        for s in self.__squares:
-            vertex_data.extend(s.get_vertex_data())
+        for t in self.__triangles:
+            vertex_data.extend(t.get_vertex_data())
         return vertex_data

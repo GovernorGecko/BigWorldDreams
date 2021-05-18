@@ -28,7 +28,7 @@ class Triangle:
         ):
             self.__positions = positions
         else:
-            raise ValueError("Expecting a List or Tuple of floats/Vector3s.")
+            raise ValueError("Expecting a List of Vector3s.")
 
         # Calculate Normals
         """
