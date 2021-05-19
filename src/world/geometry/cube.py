@@ -9,24 +9,31 @@ from .vector3 import Vector3
 class Cube:
     """
         p1----p2
-       /|     /|
-      p5|---p6 |
-      | p3----p4
-      |/     |/
+       /|*****/|
+      p3----p4*|
+      |*p5---|p6
+      |/*****|/
       p7----p8
     """
 
     __slots__ = ["__triangles"]
 
-    def __init__(self, base_position, colors=None, texcoords=None):
+    def __init__(
+        self, center=Vector3(), colors=None, scale=1.0, texcoords=None
+    ):
         self.__triangles = []
 
-        # Base Position should be a Vector3
-        if not isinstance(base_position, Vector3):
-            raise ValueError("Expected a Vector3 for the base_position.")
+        # Base center should be a Vector3
+        if not isinstance(center, Vector3):
+            raise ValueError("Expected a Vector3 for the center.")
+
+        # Scale.
+        if not isinstance(scale, float) or scale < 0.0:
+            scale = 1.0
+        half_scale = scale * 0.5
 
         # Create our.. points
-        p1 = base_position
+        p1 = center.offset(x=-half_scale, y=half_scale, z=-half_scale)
         p2 = p1.offset(x=1.0)
         p3 = p1.offset(z=1.0)
         p4 = p1.offset(x=1.0, z=1.0)
@@ -56,8 +63,8 @@ class Cube:
         self.__triangles.append(Triangle([p6, p5, p1]))
 
         # Bottom
-        self.__triangles.append(Triangle([p8, p7, p5]))
-        self.__triangles.append(Triangle([p5, p6, p8]))
+        self.__triangles.append(Triangle([p6, p5, p7]))
+        self.__triangles.append(Triangle([p7, p8, p6]))
 
     def get_triangles(self):
         """

@@ -64,9 +64,13 @@ class Chunk:
         """
         """
         # return [triangle for triangle in self.__triangles if self.get_triangle_occurrences(triangle) >= 2]
+        total_occurrences = 0
         for triangle in self.__triangles:
-            print(self.get_triangle_occurrences(triangle))
-        return self.__triangles
+            occurrences = self.get_triangle_occurrences(triangle)
+            if occurrences >= 2:
+                total_occurrences += 1
+        # return self.__triangles
+        return total_occurrences
 
     def get_triangle_occurrences(self, triangle):
         """

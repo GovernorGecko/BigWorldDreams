@@ -6,9 +6,9 @@ from perlin_noise import PerlinNoise
 
 from src.gltf.generator import Generator
 from src.world.chunk import Chunk
-from src.world.geometry.triangle import Triangle
-from src.world.geometry.vector3 import Vector3
-from src.world.geometry.cube import Cube
+# from src.world.geometry.triangle import Triangle
+# from src.world.geometry.vector3 import Vector3
+# from src.world.geometry.cube import Cube
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -28,12 +28,36 @@ chunk = Chunk(height_data, minimum_height=minimum_height)
 print(chunk.clean())
 
 # Generator?
-# generator = Generator("heightmap_test", ["POSITION", "NORMAL"])
+generator = Generator("heightmap_test", ["POSITION", "NORMAL"])
 
-# for vertices in chunk.get_vertex_data():
-    # generator.add_attribute_sequence(vertices)
+for vertices in chunk.get_vertex_data():
+    generator.add_attribute_sequence(vertices)
 
-# generator.save("assets")
+generator.save("assets")
+
+"""
+
+# Testing Cube/Triangle Culling
+c1 = Cube(center=Vector3(0.0, 0.0, 0.0))
+c2 = Cube(center=Vector3(0.0, 1.0, 0.0))
+triangles = []
+triangles.extend(c1.get_triangles())
+triangles.extend(c2.get_triangles())
+
+t1 = Triangle([
+    Vector3(-0.5, 0.5, 0.5),
+    Vector3(-0.5, 0.5, -0.5),
+    Vector3(0.5, 0.5, -0.5)
+])
+
+for triangle in triangles:
+    occurrences = 0
+    for other_triangle in triangles:
+        if other_triangle == triangle:
+            occurrences += 1
+    print(occurrences)
+
+"""
 
 """
 

@@ -12,9 +12,10 @@ class Vector3():
     __slots__ = ["__x", "__y", "__z"]
 
     def __init__(self, *args):
-        self.__set(0.0, 0.0, 0.0)
 
-        if isinstance(args[0], (list, tuple)):
+        if len(args) == 0:
+            self.__set(0.0, 0.0, 0.0)
+        elif isinstance(args[0], (list, tuple)):
             if len(args[0]) != 3:
                 raise ValueError("List or Tuple must be 3 values.")
             self.__set(*args[0])
