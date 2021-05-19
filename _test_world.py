@@ -4,15 +4,11 @@ Perlin Noise Learning/Tests
 
 from perlin_noise import PerlinNoise
 
-# from src.gltf.generator import Generator
-# from src.world.chunk import Chunk
-# from src.world.geometry.triangle import Triangle
+from src.gltf.generator import Generator
+from src.world.chunk import Chunk
+from src.world.geometry.triangle import Triangle
 from src.world.geometry.vector3 import Vector3
 from src.world.geometry.cube import Cube
-
-c = Cube(Vector3(1, 1, 1))
-
-"""
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -28,17 +24,16 @@ minimum_height = min(min(height_data))
 
 # Chunkkk!
 chunk = Chunk(height_data, minimum_height=minimum_height)
-print(chunk.get_vertex_data())
+# print(chunk.get_vertex_data())
+print(chunk.clean())
 
 # Generator?
-generator = Generator("heightmap_test", ["POSITION", "NORMAL"])
+# generator = Generator("heightmap_test", ["POSITION", "NORMAL"])
 
-for vertices in chunk.get_vertex_data():
-    generator.add_attribute_sequence(vertices)
+# for vertices in chunk.get_vertex_data():
+    # generator.add_attribute_sequence(vertices)
 
-generator.save("assets")
-
-"""
+# generator.save("assets")
 
 """
 
@@ -50,13 +45,21 @@ t1 = Triangle([
 
 t2 = Triangle([
     Vector3(1, 1, 1),
-    Vector3(1, 0, 1),
-    Vector3(0, 0, 1)
+    Vector3(0, 0, 1),
+    Vector3(1, 0, 1)
 ])
 
+triangles = [t1, t2]
+occurrences = 0
+for triangle in triangles:
+    if triangle == t1:
+        occurrences += 1
+print(occurrences)
+
 print(t1 == t2)
-d = t1.get_vertex_data()
-print(d)
+# d = t1.get_vertex_data()
+# print(t1)
+# print(t2)
 
 """
 

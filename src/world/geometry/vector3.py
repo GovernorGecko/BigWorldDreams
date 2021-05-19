@@ -111,7 +111,7 @@ class Vector3():
             float/int sets our x value.
         """
         if isinstance(value, (float, int)):
-            self.__x = value
+            self.__x = float(value)
 
     @property
     def Y(self):
@@ -128,7 +128,7 @@ class Vector3():
             float/int sets our y value.
         """
         if isinstance(value, (float, int)):
-            self.__y = value
+            self.__y = float(value)
 
     @property
     def Z(self):
@@ -145,4 +145,4 @@ class Vector3():
             float/int sets our z value.
         """
         if isinstance(value, (float, int)):
-            self.__z = value
+            self.__z = float(value)

@@ -4,7 +4,7 @@ chunk
 A chunk is a x by x by x mesh.
 """
 
-from .geometry.triangle import Triangle
+from .geometry.cube import Cube
 from .geometry.vector3 import Vector3
 
 
@@ -52,93 +52,30 @@ class Chunk:
                     (height_data[y][x] - minimum_height) / self.__block_size
                 )
                 for z in range(z_max, -1, -1):
-                    self.__add_tile(x, z, y)
+                    c = Cube(Vector3(x, z, y))
+                    self.__triangles.extend(c.get_triangles())
 
         # Debug Information
         print(
             f"Created a Chunk of {self.__size}x{self.__size}x{self.__size}"
         )
 
-    def __add_tile(self, x, y, z):
-        """
-        Parameters:
-            int x position of the tile
-            int z position of the tile
-            int y position of the tile
-        """
-
-        # Top
-        self.__triangles.append(
-            Triangle([
-                Vector3([x + 1, y, z]),
-                Vector3([x, y, z]),
-                Vector3([x, y, z + 1])
-            ])
-        )
-        self.__triangles.append(
-            Triangle([
-                Vector3([x, y, z + 1]),
-                Vector3([x + 1, y, z + 1]),
-                Vector3([x + 1, y, z])
-            ])
-        )
-
-        """
-        # Side X+
-        self.__squares.append(
-            Square(
-                [x + 1, y, z + 1],
-                [x + 1, y, z],
-                [x + 1, y - 1, z + 1],
-                [x + 1, y - 1, z]
-            )
-        )
-
-        # Side X= (or just X)
-        self.__squares.append(
-            Square(
-                [x, y, z],
-                [x, y, z + 1],
-                [x, y - 1, z],
-                [x, y - 1, z + 1]
-            )
-        )
-
-        # Side Z+
-        self.__squares.append(
-            Square(
-                [x, y, z + 1],
-                [x + 1, y, z + 1],
-                [x, y - 1, z + 1],
-                [x + 1, y - 1, z + 1]
-            )
-        )
-
-        # Side Z=
-        self.__squares.append(
-            Square(
-                [x + 1, y, z],
-                [x, y, z],
-                [x + 1, y - 1, z],
-                [x, y - 1, z]
-            )
-        )
-
-        # Bottom
-        self.__squares.append(
-            Square(
-                [x + 1, y - 1, z],
-                [x, y - 1, z],
-                [x + 1, y - 1, z + 1],
-                [x, y - 1, z + 1]
-            )
-        )
-        """
-
     def clean(self):
         """
         """
-        print("hi")
+        # return [triangle for triangle in self.__triangles if self.get_triangle_occurrences(triangle) >= 2]
+        for triangle in self.__triangles:
+            print(self.get_triangle_occurrences(triangle))
+        return self.__triangles
+
+    def get_triangle_occurrences(self, triangle):
+        """
+        """
+        occurrences = 0
+        for triangle_other in self.__triangles:
+            if triangle_other == triangle:
+                occurrences += 1
+        return occurrences
 
     def get_vertex_data(self):
         """
