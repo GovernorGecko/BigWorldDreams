@@ -4,11 +4,11 @@ Perlin Noise Learning/Tests
 
 from perlin_noise import PerlinNoise
 
-from src.gltf.generator import Generator
+from GLTF2.src.generator import Generator
 from src.world.chunk import Chunk
-# from src.world.geometry.triangle import Triangle
-# from src.world.geometry.vector3 import Vector3
-# from src.world.geometry.cube import Cube
+# from src.world.MultiD.src.triangle import Triangle
+# from src.world.MultiD.src.vector3 import Vector3
+# from src.world.MultiD.src.cube import Cube
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
