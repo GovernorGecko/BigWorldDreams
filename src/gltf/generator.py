@@ -37,7 +37,7 @@ class Generator:
         "indices": Accessor(5123, "SCALAR", 1),
     }
 
-    def __init__(self, name, attribute_order={"POSITION"}):
+    def __init__(self, name, attribute_order=["POSITION"]):
 
         # Set up Variables
         self.__json = {
@@ -61,7 +61,8 @@ class Generator:
                         {
                             "attributes": {}
                         }
-                    ]
+                    ],
+                    "name": name
                 }
             ],
             "accessors": [],

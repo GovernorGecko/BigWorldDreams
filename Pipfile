@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-noise = "*"
 flake8 = "*"
-panda3d = "*"
-panda3d-gltf = "*"
+perlin-noise = "*"
+matplotlib = "*"
 
 [dev-packages]
 
