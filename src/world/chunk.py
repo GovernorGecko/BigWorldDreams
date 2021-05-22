@@ -4,8 +4,8 @@ chunk
 A chunk is a x by x by x mesh.
 """
 
-from .geometry.cube import Cube
-from .geometry.vector3 import Vector3
+from .MultiD.src.cube import Cube
+from .MultiD.src.cube import Vector3
 
 
 class Chunk:

@@ -1,0 +1,7 @@
+
+[submodule "src/world/MultiD"]
+	path = src/world/MultiD
+	url = https://github.com/GovernorGecko/MultiD
+[submodule "GLTF2"]
+	path = GLTF2
+	url = https://github.com/GovernorGecko/GLTF2
