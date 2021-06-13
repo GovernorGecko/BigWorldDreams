@@ -30,7 +30,7 @@ class Chunk:
         # Is height_data a 2d array of the same length/width?
         if (
             not isinstance(height_data, list) or
-            not isinstance(height_data[0], list) or 
+            not isinstance(height_data[0], list) or
             len(height_data) != len(height_data[0])
         ):
             raise ValueError(
@@ -52,7 +52,7 @@ class Chunk:
                     (height_data[y][x] - minimum_height) / self.__block_size
                 )
                 for z in range(z_max, -1, -1):
-                    c = Cube(Vector3(x, z, y))
+                    c = Cube(Vector3(float(x), float(z), float(y)))
                     self.__triangles.extend(c.get_triangles())
 
         # Debug Information

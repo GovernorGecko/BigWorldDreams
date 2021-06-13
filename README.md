@@ -2,10 +2,8 @@
 Open World Generator
 
 # TODO
-= World
-    - Find unnecessary triangles in Chunk.py
-        - Only outside vertices?
-        - Iterate our Squares, removing facing that are exact same
-    - HeightMap Class
-    - Smaller tiles?
-= Thread
+- Bottom of Cube right order?
+- Find unnecessary triangles in Chunk.py
+- Should we consider chunks to be tiles?  x by x, infinite height?
+- HeightMap Class
+- Smaller tiles?

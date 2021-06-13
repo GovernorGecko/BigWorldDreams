@@ -14,7 +14,7 @@ from src.world.chunk import Chunk
 noise = PerlinNoise(octaves=1, seed=1)
 
 # Size of our Chunk
-size = 2
+size = 16
 
 # Create the height data
 height_data = [
@@ -28,7 +28,7 @@ chunk = Chunk(height_data, minimum_height=minimum_height)
 print(chunk.clean())
 
 # Generator?
-generator = Generator("heightmap_test", ["POSITION", "NORMAL"])
+generator = Generator("test", ["POSITION", "NORMAL"])
 
 for vertices in chunk.get_vertex_data():
     generator.add_attribute_sequence(vertices)
