@@ -2,7 +2,8 @@
 Open World Generator
 
 # TODO
-- Bottom of Cube right order?
+- Support obj files
+- Test in Panda3d
 - Find unnecessary triangles in Chunk.py
 - Should we consider chunks to be tiles?  x by x, infinite height?
 - HeightMap Class

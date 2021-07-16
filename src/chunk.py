@@ -1,7 +1,7 @@
 """
-chunk
+    chunk
 
-A chunk is a x by x by x mesh.
+    A chunk is a x by x by x mesh.
 """
 
 from .MultiD.src.cube import Cube
@@ -11,9 +11,11 @@ from .MultiD.src.cube import Vector3
 class Chunk:
     """
     Parameters:
-        [[float, ...]] height_data
-        float block_size
-        float minimum_height
+        (required)
+        [[float, ...]] 2D List of Floats related to the Height.
+        (optional)
+        float size each block will take up from our Height
+        float minimum height, to remove negatives.
     """
 
     __slots__ = [
@@ -57,7 +59,7 @@ class Chunk:
 
         # Debug Information
         print(
-            f"Created a Chunk of {self.__size}x{self.__size}x{self.__size}"
+            f"Created a Chunk of {self.__size}x{self.__size}"
         )
 
     def clean(self):

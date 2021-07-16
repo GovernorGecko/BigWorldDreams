@@ -1,11 +1,12 @@
 """
-Perlin Noise Learning/Tests
+    Perlin Noise Learning/Tests
 """
 
 from perlin_noise import PerlinNoise
 
-from GLTF2.src.generator import Generator
-from src.world.chunk import Chunk
+# from GLTF2.src.generator import Generator
+# from ObjFile.src.generator import Generator
+from src.chunk import Chunk
 # from src.world.MultiD.src.triangle import Triangle
 # from src.world.MultiD.src.vector3 import Vector3
 # from src.world.MultiD.src.cube import Cube
@@ -14,7 +15,7 @@ from src.world.chunk import Chunk
 noise = PerlinNoise(octaves=1, seed=1)
 
 # Size of our Chunk
-size = 16
+size = 4
 
 # Create the height data
 height_data = [
@@ -28,12 +29,12 @@ chunk = Chunk(height_data, minimum_height=minimum_height)
 print(chunk.clean())
 
 # Generator?
-generator = Generator("test", ["POSITION", "NORMAL"])
+# generator = Generator("test", ["POSITION", "NORMAL"])
 
-for vertices in chunk.get_vertex_data():
-    generator.add_attribute_sequence(vertices)
+# for vertices in chunk.get_vertex_data():
+#    generator.add_attribute_sequence(vertices)
 
-generator.save("assets")
+# generator.save("assets")
 
 """
 

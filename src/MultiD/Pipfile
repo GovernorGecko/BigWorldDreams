@@ -5,9 +5,6 @@ name = "pypi"
 
 [packages]
 flake8 = "*"
-perlin-noise = "*"
-matplotlib = "*"
-panda3d = "*"
 
 [dev-packages]
 
