@@ -1,7 +1,7 @@
 """
     chunk
 
-    A chunk is a x by x by x mesh.
+    A chunk is a x by x mesh.
 """
 
 from .MultiD.src.cube import Cube
@@ -10,23 +10,28 @@ from .MultiD.src.cube import Vector3
 
 class Chunk:
     """
-    Parameters:
+    parameters:
         (required)
         [[float, ...]] 2D List of Floats related to the Height.
         (optional)
         float size each block will take up from our Height
         float minimum height, to remove negatives.
+        bool should we only include the top most block?
     """
 
     __slots__ = [
         "__block_size", "__height_data", "__minimum_height", "__size",
-        "__triangles",
+        "__top_only", "__triangles",
     ]
 
-    def __init__(self, height_data, block_size=0.2, minimum_height=0.0):
+    def __init__(
+        self,
+        height_data, block_size=0.2, minimum_height=0.0, top_only=False
+    ):
         self.__block_size = block_size
         self.__height_data = height_data
         self.__minimum_height = minimum_height
+        self.__top_only = top_only
         self.__triangles = []
 
         # Is height_data a 2d array of the same length/width?
@@ -53,7 +58,10 @@ class Chunk:
                 z_max = int(
                     (height_data[y][x] - minimum_height) / self.__block_size
                 )
-                for z in range(z_max, -1, -1):
+                z_min = -1
+                if top_only:
+                    z_min = z_max - 1
+                for z in range(z_max, z_min, -1):
                     c = Cube(Vector3(float(x), float(z), float(y)))
                     self.__triangles.extend(c.get_triangles())
 
@@ -64,6 +72,8 @@ class Chunk:
 
     def clean(self):
         """
+        returns:
+            int of same number of triangles found
         """
         # return [triangle for triangle in self.__triangles if self.get_triangle_occurrences(triangle) >= 2]
         total_occurrences = 0
@@ -74,8 +84,19 @@ class Chunk:
         # return self.__triangles
         return total_occurrences
 
+    def get_triangles(self):
+        """
+        returns:
+            list of Triangles
+        """
+        return self.__triangles
+
     def get_triangle_occurrences(self, triangle):
         """
+        parameters:
+            Triangle to compare against
+        returns:
+            int of count found that is similar
         """
         occurrences = 0
         for triangle_other in self.__triangles:
@@ -85,7 +106,7 @@ class Chunk:
 
     def get_vertex_data(self):
         """
-        Returns:
+        returns:
             [[float, ...]] of vertex data.
         """
         vertex_data = []

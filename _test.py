@@ -5,11 +5,13 @@
 from perlin_noise import PerlinNoise
 
 # from GLTF2.src.generator import Generator
-# from ObjFile.src.generator import Generator
+from ObjFile.src.generator import Generator
 from src.chunk import Chunk
-# from src.world.MultiD.src.triangle import Triangle
-# from src.world.MultiD.src.vector3 import Vector3
-# from src.world.MultiD.src.cube import Cube
+from src.MultiD.src.cube import Cube
+from src.MultiD.src.triangle import Triangle
+from src.MultiD.src.vector import Vector2, Vector3
+
+"""
 
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
@@ -24,17 +26,24 @@ height_data = [
 minimum_height = min(min(height_data))
 
 # Chunkkk!
-chunk = Chunk(height_data, minimum_height=minimum_height)
+chunk = Chunk(height_data, minimum_height=minimum_height, top_only=True)
 # print(chunk.get_vertex_data())
 print(chunk.clean())
 
-# Generator?
+# GLTF2 Generator?
 # generator = Generator("test", ["POSITION", "NORMAL"])
 
 # for vertices in chunk.get_vertex_data():
 #    generator.add_attribute_sequence(vertices)
 
 # generator.save("assets")
+
+# Obj Generator
+generator = Generator("test")
+
+for triangle in chunk.get_triangles():
+    generator.add_triangle(triangle.get_positions())
+generator.save("./tests")
 
 """
 
@@ -44,6 +53,8 @@ c2 = Cube(center=Vector3(0.0, 1.0, 0.0))
 triangles = []
 triangles.extend(c1.get_triangles())
 triangles.extend(c2.get_triangles())
+
+print(triangles)
 
 t1 = Triangle([
     Vector3(-0.5, 0.5, 0.5),
@@ -56,22 +67,21 @@ for triangle in triangles:
     for other_triangle in triangles:
         if other_triangle == triangle:
             occurrences += 1
-    print(occurrences)
-
-"""
+    if occurrences > 1:
+        print(triangle)
 
 """
 
 t1 = Triangle([
-    Vector3(1, 1, 1),
-    Vector3(1, 0, 1),
-    Vector3(0, 0, 1)
+    Vector3(1.0, 1.0, 1.0),
+    Vector3(1.0, 0.0, 1.0),
+    Vector3(0.0, 0.0, 1.0)
 ])
 
 t2 = Triangle([
-    Vector3(1, 1, 1),
-    Vector3(0, 0, 1),
-    Vector3(1, 0, 1)
+    Vector3(1.0, 1.0, 1.0),
+    Vector3(0.0, 0.0, 1.0),
+    Vector3(1.0, 0.0, 1.0)
 ])
 
 triangles = [t1, t2]
