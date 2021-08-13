@@ -11,8 +11,6 @@ from src.MultiD.src.cube import Cube
 from src.MultiD.src.triangle import Triangle
 from src.MultiD.src.vector import Vector2, Vector3
 
-"""
-
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
 
@@ -69,6 +67,8 @@ for triangle in triangles:
             occurrences += 1
     if occurrences > 1:
         print(triangle)
+
+"""
 
 """
 
