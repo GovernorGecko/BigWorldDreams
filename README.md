@@ -2,8 +2,12 @@
 Open World Generator
 
 # TODO
-- Bottom of Cube right order?
-- Find unnecessary triangles in Chunk.py
-- Should we consider chunks to be tiles?  x by x, infinite height?
+- Chunk Version (all or top only)
+- Test in Panda3d
 - HeightMap Class
 - Smaller tiles?
+- Find unnecessary Triangles/Points
+    - Issue with way we are rendering Cube
+    - # Bottom
+    - self.__triangles.append(Triangle([p6, p5, p7]))
+    - self.__triangles.append(Triangle([p7, p8, p6]))

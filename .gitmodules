@@ -1,7 +1,10 @@
 
-[submodule "src/world/MultiD"]
-	path = src/world/MultiD
-	url = https://github.com/GovernorGecko/MultiD
 [submodule "GLTF2"]
 	path = GLTF2
 	url = https://github.com/GovernorGecko/GLTF2
+[submodule "ObjFile"]
+	path = ObjFile
+	url = https://github.com/GovernorGecko/ObjFile.git
+[submodule "src/MultiD"]
+	path = src/MultiD
+	url = https://github.com/GovernorGecko/MultiD
