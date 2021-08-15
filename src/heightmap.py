@@ -2,54 +2,94 @@
 heightmap
 """
 
+import json
+import os
+
 from perlin_noise import PerlinNoise
 
-from .MultiD.src.vector import Vector2
-from .ObjFile.src.generator import Generator
-
 from .chunk import Chunk
+from .MultiD.src.vector import Vector2
 
 
-class Heightmap:
+def create_heightmap(chunk_count, chunk_size, name, path):
     """
     """
 
-    __slots__ = ["__chunks"]
+    # Json
+    json_data = {
+        "name": name,
+        "chunk_count": chunk_count,
+        "chunk_size": chunk_size,
+        "chunks": [],
+    }
 
-    def __init__(self, chunk_count, chunk_size):
+    # Noise Base
+    noise = PerlinNoise(octaves=1, seed=1)
 
-        # Chunks!
-        self.__chunks = []
+    # Heightmap Size
+    heightmap_size = chunk_count * chunk_size
 
-        # Noise Base
-        noise = PerlinNoise(octaves=1, seed=1)
+    # Build Heightmap Data
+    height_data = [
+        [
+            noise(
+                [i/heightmap_size, j/heightmap_size]
+            ) for j in range(heightmap_size)
+        ] for i in range(heightmap_size)
+    ]
+    minimum_height = min(min(height_data))
 
-        # Heightmap Size
-        heightmap_size = chunk_count * chunk_size
+    # Iterate Height Data, building chunks.
+    i = 0
+    for x in range(0, chunk_count):
+        for y in range(0, chunk_count):
 
-        # Build Heightmap Data
-        height_data = [
-            [noise(
-                    [i/heightmap_size, j/heightmap_size]
-                ) for j in range(heightmap_size)
-            ] for i in range(heightmap_size)
-        ]
-        minimum_height = min(min(height_data))
+            # Chunk Start Position
+            chunk_start = Vector2(
+                float(x * chunk_size),
+                float(y * chunk_size)
+            )
 
-        # Iterate Height Data, building chunks.
-        for x in range(0, chunk_count):
-            for y in range(0, chunk_count):
-                chunk_start = x * chunk_size
-                chunk_end_x = chunk_start + chunk_size
-                chunk_data = [height_data[i][chunk_start:chunk_end] for i in range(chunk_start,chunk_end)]
-                self.__chunks.append(Chunk(chunk_data, minimum_height=minimum_height, top_only=True))
-        
-        """
-        # Obj Generator
-        generator = Generator("test")
+            # Chunk End Position
+            chunk_end = Vector2(
+                float(chunk_start.X + chunk_size),
+                float(chunk_start.Y + chunk_size)
+            )
 
-        for triangle in chunk.get_triangles():
-            generator.add_triangle(triangle.get_positions())
-        generator.save("./tests")
-        """
-        
+            # Chunk Data, pulled from Heightmap
+            chunk_data = [
+                height_data[i][
+                    int(chunk_start.X):int(chunk_end.X)
+                ] for i in range(
+                    int(chunk_start.Y), int(chunk_end.Y))
+            ]
+
+            # Chunk Name
+            chunk_name = f"chunk_{i}"
+
+            # Build the chunk
+            chunk = Chunk(
+                chunk_name, chunk_data, minimum_height=minimum_height,
+                top_only=True
+            )
+
+            # Store the obj file
+            chunk.save(path)
+
+            # Add to json
+            json_data["chunks"].append(
+                {
+                    "x": x,
+                    "y": y,
+                    "name": chunk_name
+                }
+            )
+
+            # Chunk count
+            i += 1
+
+    # Dump the data!
+    path_to_store = os.path.join(path, f"{name}.json")
+    with open(path_to_store, 'w') as outfile:
+        json.dump(json_data, outfile, indent=4)
+    print(json_data)

@@ -2,9 +2,9 @@
 Open World Generator
 
 # TODO
-- Chunk Version (all or top only)
-- Test in Panda3d
 - HeightMap Class
+- Comments
+- Test in Panda3d
 - Smaller tiles?
 - Find unnecessary Triangles/Points
     - Issue with way we are rendering Cube

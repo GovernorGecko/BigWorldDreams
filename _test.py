@@ -5,12 +5,12 @@
 # from perlin_noise import PerlinNoise
 
 # from src.chunk import Chunk
-from src.heightmap import Heightmap
+from src.heightmap import create_heightmap
 # from src.MultiD.src.cube import Cube
 # from src.MultiD.src.triangle import Triangle
 # from src.MultiD.src.vector import Vector2, Vector3
 
-hm = Heightmap(2, 4)
+create_heightmap(2, 4, "chunk", "./tests")
 
 """"
 # Noise Base

@@ -6,6 +6,7 @@
 
 from .MultiD.src.cube import Cube
 from .MultiD.src.cube import Vector3
+from .ObjFile.src.generator import Generator
 
 
 class Chunk:
@@ -20,17 +21,22 @@ class Chunk:
     """
 
     __slots__ = [
-        "__block_size", "__height_data", "__minimum_height", "__size",
-        "__top_only", "__triangles",
+        "__block_size", "__height_data", "__json", "__minimum_height",
+        "__name", "__size", "__top_only", "__triangles",
     ]
 
     def __init__(
-        self,
+        self, name,
         height_data, block_size=0.2, minimum_height=0.0, top_only=False
     ):
         self.__block_size = block_size
         self.__height_data = height_data
+        self.__json = {
+            "name": name,
+            "tiles": [],
+        }
         self.__minimum_height = minimum_height
+        self.__name = name
         self.__top_only = top_only
         self.__triangles = []
 
@@ -113,3 +119,15 @@ class Chunk:
         for t in self.__triangles:
             vertex_data.extend(t.get_vertex_data())
         return vertex_data
+
+    def save(self, path):
+        """
+        """
+
+        # Obj Generator
+        generator = Generator(self.__name)
+
+        # Iterate Triangles, generating obj file
+        for triangle in self.__triangles:
+            generator.add_triangle(triangle.get_positions())
+        generator.save(path)
