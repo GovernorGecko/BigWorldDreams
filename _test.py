@@ -2,6 +2,8 @@
     Perlin Noise Learning/Tests
 """
 
+import os
+
 # from perlin_noise import PerlinNoise
 
 # from src.chunk import Chunk
@@ -10,7 +12,12 @@ from src.heightmap import create_heightmap
 # from src.MultiD.src.triangle import Triangle
 # from src.MultiD.src.vector import Vector2, Vector3
 
-create_heightmap(2, 4, "chunk", "./tests")
+path_to_store = "./tests"
+
+if not os.path.exists(path_to_store):
+    os.mkdir(path_to_store)
+
+create_heightmap(2, 4, "chunk", path_to_store)
 
 """"
 # Noise Base
