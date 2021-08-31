@@ -41,8 +41,7 @@ def create_heightmap(chunk_count, chunk_size, name, path="."):
 
     # Build Heightmap Data
     height_data = [
-        [
-            noise(
+        [noise(
                 [i/heightmap_size, j/heightmap_size]
             ) for j in range(heightmap_size)
         ] for i in range(heightmap_size)
