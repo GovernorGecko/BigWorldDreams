@@ -2,9 +2,8 @@
 Open World Generator
 
 # TODO
-- HeightMap Class
 - Comments
-- Test in Panda3d
+- MultiD Cube could handle a Json output of its data? (center... etc)
 - Smaller tiles?
 - Find unnecessary Triangles/Points
     - Issue with way we are rendering Cube

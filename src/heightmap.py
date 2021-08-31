@@ -1,5 +1,5 @@
 """
-heightmap
+    heightmap
 """
 
 import json
@@ -11,8 +11,18 @@ from .chunk import Chunk
 from .MultiD.src.vector import Vector2
 
 
-def create_heightmap(chunk_count, chunk_size, name, path):
+def create_heightmap(chunk_count, chunk_size, name, path="."):
     """
+    parameters
+        int
+            Number of chunks to generate
+        int
+            Size of each chunk (#x#)
+        string
+            Name to prefix data with.
+        (optional)
+        string
+            Path to store everything.
     """
 
     # Json
@@ -92,4 +102,4 @@ def create_heightmap(chunk_count, chunk_size, name, path):
     path_to_store = os.path.join(path, f"{name}.json")
     with open(path_to_store, 'w') as outfile:
         json.dump(json_data, outfile, indent=4)
-    print(json_data)
+    # print(json_data)
