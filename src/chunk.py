@@ -110,7 +110,7 @@ class Chunk:
     def get_triangles(self):
         """
         returns:
-            list[Triangle]                
+            list[Triangle]
         """
         return self.__triangles
 
@@ -120,7 +120,7 @@ class Chunk:
             Triangle
                 To compare against
         returns
-            int 
+            int
                 Count found that is similar
         """
         occurrences = 0
