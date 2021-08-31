@@ -130,3 +130,6 @@ dmypy.json
 
 # Assets
 assets
+
+# Tests
+tests/*

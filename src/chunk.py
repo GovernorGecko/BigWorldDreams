@@ -4,33 +4,46 @@
     A chunk is a x by x mesh.
 """
 
+import json
+import os
+
 from .MultiD.src.cube import Cube
 from .MultiD.src.cube import Vector3
+from .ObjFile.src.generator import Generator
 
 
 class Chunk:
     """
     parameters:
         (required)
-        [[float, ...]] 2D List of Floats related to the Height.
+        [[float, ...]]
+            2D List of Floats related to the Height.
         (optional)
-        float size each block will take up from our Height
-        float minimum height, to remove negatives.
-        bool should we only include the top most block?
+        float
+            size each block will take up from our Height
+        float
+            minimum height, to remove negatives.
+        bool
+            should we only include the top most block?
     """
 
     __slots__ = [
-        "__block_size", "__height_data", "__minimum_height", "__size",
-        "__top_only", "__triangles",
+        "__block_size", "__height_data", "__json", "__minimum_height",
+        "__name", "__size", "__top_only", "__triangles",
     ]
 
     def __init__(
-        self,
+        self, name,
         height_data, block_size=0.2, minimum_height=0.0, top_only=False
     ):
         self.__block_size = block_size
         self.__height_data = height_data
+        self.__json = {
+            "name": name,
+            "tiles": [],
+        }
         self.__minimum_height = minimum_height
+        self.__name = name
         self.__top_only = top_only
         self.__triangles = []
 
@@ -63,6 +76,14 @@ class Chunk:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
                     c = Cube(Vector3(float(x), float(z), float(y)))
+                    self.__json["tiles"].append(
+                        {
+                            "center_x": float(x),
+                            "center_y": float(y),
+                            "center_z": float(z),
+                            "size": 1.0,
+                        }
+                    )
                     self.__triangles.extend(c.get_triangles())
 
         # Debug Information
@@ -73,9 +94,11 @@ class Chunk:
     def clean(self):
         """
         returns:
-            int of same number of triangles found
+            int
+                Same number of triangles found
         """
-        # return [triangle for triangle in self.__triangles if self.get_triangle_occurrences(triangle) >= 2]
+        # return [triangle for triangle in self.__triangles if
+        # self.get_triangle_occurrences(triangle) >= 2]
         total_occurrences = 0
         for triangle in self.__triangles:
             occurrences = self.get_triangle_occurrences(triangle)
@@ -87,16 +110,18 @@ class Chunk:
     def get_triangles(self):
         """
         returns:
-            list of Triangles
+            list[Triangle]
         """
         return self.__triangles
 
     def get_triangle_occurrences(self, triangle):
         """
-        parameters:
-            Triangle to compare against
-        returns:
-            int of count found that is similar
+        parameters
+            Triangle
+                To compare against
+        returns
+            int
+                Count found that is similar
         """
         occurrences = 0
         for triangle_other in self.__triangles:
@@ -106,10 +131,30 @@ class Chunk:
 
     def get_vertex_data(self):
         """
-        returns:
-            [[float, ...]] of vertex data.
+        returns
+            [[float, ...]]
+                Vertex data.
         """
         vertex_data = []
         for t in self.__triangles:
             vertex_data.extend(t.get_vertex_data())
         return vertex_data
+
+    def save(self, path):
+        """
+        parameters
+            string
+                path to store the Chunk Json and Obj data
+        """
+
+        # Obj Generator
+        generator = Generator(self.__name)
+
+        # Iterate Triangles, generating obj file
+        for triangle in self.__triangles:
+            generator.add_triangle(triangle.get_positions())
+        generator.save(path)
+
+        # Save Json
+        with open(os.path.join(path, self.__name + ".json"), "w") as outfile:
+            json.dump(self.__json, outfile, indent=4)

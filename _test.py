@@ -2,15 +2,24 @@
     Perlin Noise Learning/Tests
 """
 
-from perlin_noise import PerlinNoise
+import os
 
-# from GLTF2.src.generator import Generator
-from ObjFile.src.generator import Generator
-from src.chunk import Chunk
-from src.MultiD.src.cube import Cube
-from src.MultiD.src.triangle import Triangle
-from src.MultiD.src.vector import Vector2, Vector3
+# from perlin_noise import PerlinNoise
 
+# from src.chunk import Chunk
+from src.heightmap import create_heightmap
+# from src.MultiD.src.cube import Cube
+# from src.MultiD.src.triangle import Triangle
+# from src.MultiD.src.vector import Vector2, Vector3
+
+path_to_store = "./tests"
+
+if not os.path.exists(path_to_store):
+    os.mkdir(path_to_store)
+
+create_heightmap(2, 4, "chunk", path_to_store)
+
+""""
 # Noise Base
 noise = PerlinNoise(octaves=1, seed=1)
 
@@ -42,6 +51,8 @@ generator = Generator("test")
 for triangle in chunk.get_triangles():
     generator.add_triangle(triangle.get_positions())
 generator.save("./tests")
+
+"""
 
 """
 
