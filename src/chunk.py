@@ -8,7 +8,7 @@ import json
 import os
 
 from .MultiD.src.cube import Cube
-from .MultiD.src.cube import Vector3
+from .MultiD.src.vector import Vector3, Vector2
 from .ObjFile.src.generator import Generator
 
 
@@ -75,7 +75,10 @@ class Chunk:
                 if top_only:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
-                    c = Cube(Vector3(float(x), float(z), float(y)))
+                    c = Cube(
+                        Vector3(float(x), float(z), float(y)),
+                        texcoords=Vector2(0.0, 1.0),
+                        )
                     self.__json["tiles"].append(
                         {
                             "center_x": float(x),
@@ -152,7 +155,10 @@ class Chunk:
 
         # Iterate Triangles, generating obj file
         for triangle in self.__triangles:
-            generator.add_triangle(triangle.get_positions())
+            generator.add_triangle(
+                triangle.get_positions(),
+                triangle.get_texcoords()
+                )
         generator.save(path)
 
         # Save Json
