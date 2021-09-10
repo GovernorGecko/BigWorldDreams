@@ -2,7 +2,6 @@
 Open World Generator
 
 # TODO
-- Pass TexCoords to chunk?  Or types.
-- MultiD Cube could handle a Json output of its data? (center... etc)
+- Need to pass TexCoords/Image to Chunk
 - Smaller tiles?
 - Find unnecessary Triangles/Points

@@ -162,7 +162,10 @@ class Chunk:
         """
 
         # Obj Generator
-        generator = Generator(self.__name)
+        generator = Generator(
+            self.__name,
+            image_name="chunk.png"
+        )
 
         # Iterate Triangles, generating obj file
         for triangle in self.__triangles:
