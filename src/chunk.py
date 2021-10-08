@@ -16,6 +16,8 @@ class Chunk:
     """
     parameters:
         (required)
+        string
+            Name of the Chunk
         [[float, ...]]
             2D List of Floats related to the Height.
         (optional)
@@ -33,8 +35,8 @@ class Chunk:
     ]
 
     def __init__(
-        self, name,
-        height_data, block_size=0.2, minimum_height=0.0, top_only=False
+        self, name, height_data,
+        block_size=0.2, minimum_height=0.0, top_only=False
     ):
         self.__block_size = block_size
         self.__height_data = height_data
@@ -76,9 +78,18 @@ class Chunk:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
                     c = Cube(
-                        Vector3(float(x), float(z), float(y)),
-                        texcoords=Vector2(0.0, 1.0),
-                        )
+                        1.0,
+                        texcoords=[
+                            Vector2(1.0, 1.0),
+                            Vector2(1.0, 0.0),
+                            Vector2(0.0, 0.0),
+                            Vector2(0.0, 1.0),
+                            Vector2(1.0, 1.0),
+                            Vector2(1.0, 0.0),
+                            Vector2(0.0, 0.0),
+                            Vector2(0.0, 1.0),
+                        ]
+                    )
                     self.__json["tiles"].append(
                         {
                             "center_x": float(x),
@@ -87,7 +98,15 @@ class Chunk:
                             "size": 1.0,
                         }
                     )
-                    self.__triangles.extend(c.get_triangles())
+                    self.__triangles.extend(
+                        c.get_triangles(
+                            offset=Vector3(
+                                x=float(x),
+                                y=float(z),
+                                z=float(y),
+                            )
+                        )
+                    )
 
         # Debug Information
         print(
@@ -112,7 +131,7 @@ class Chunk:
 
     def get_triangles(self):
         """
-        returns:
+        returns
             list[Triangle]
         """
         return self.__triangles
@@ -151,14 +170,17 @@ class Chunk:
         """
 
         # Obj Generator
-        generator = Generator(self.__name)
+        generator = Generator(
+            self.__name,
+            image_name="chunk.png"
+        )
 
         # Iterate Triangles, generating obj file
         for triangle in self.__triangles:
             generator.add_triangle(
                 triangle.get_positions(),
                 triangle.get_texcoords()
-                )
+            )
         generator.save(path)
 
         # Save Json
