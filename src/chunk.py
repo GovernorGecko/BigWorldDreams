@@ -78,7 +78,7 @@ class Chunk:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
                     c = Cube(
-                        Vector3(float(x), float(z), float(y)),
+                        1.0,
                         texcoords=[
                             Vector2(1.0, 1.0),
                             Vector2(1.0, 0.0),
