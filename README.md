@@ -2,6 +2,6 @@
 Open World Generator
 
 # TODO
-- Need to pass TexCoords/Image to Chunk
-- Smaller tiles?
-- Find unnecessary Triangles/Points
+- Use Planes instead of Cubes in Chunk?
+- Fix TexCoords in Chunk
+- Expand!

@@ -98,7 +98,15 @@ class Chunk:
                             "size": 1.0,
                         }
                     )
-                    self.__triangles.extend(c.get_triangles())
+                    self.__triangles.extend(
+                        c.get_triangles(
+                            offset=Vector3(
+                                x=float(x),
+                                y=float(z),
+                                z=float(y),
+                            )
+                        )
+                    )
 
         # Debug Information
         print(
