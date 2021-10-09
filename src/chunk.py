@@ -8,6 +8,7 @@ import json
 import os
 
 from .MultiD.src.cube import Cube
+from .MultiD.src.plane import Plane
 from .MultiD.src.vector import Vector3, Vector2
 from .ObjFile.src.generator import Generator
 
@@ -38,6 +39,11 @@ class Chunk:
         self, name, height_data,
         block_size=0.2, minimum_height=0.0, top_only=False
     ):
+
+        print(height_data)
+        print(minimum_height)
+        print(block_size)
+
         self.__block_size = block_size
         self.__height_data = height_data
         self.__json = {
@@ -77,41 +83,71 @@ class Chunk:
                 if top_only:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
-                    c = Cube(
-                        1.0,
+
+                    # Top
+                    self.__add_plane(
                         texcoords=[
-                            Vector2(1.0, 1.0),
-                            Vector2(1.0, 0.0),
                             Vector2(0.0, 0.0),
+                            Vector2(1.0, 0.0),
                             Vector2(0.0, 1.0),
                             Vector2(1.0, 1.0),
-                            Vector2(1.0, 0.0),
+                        ],
+                        x=float(x), y=float(z+0.5), z=float(y)
+                    )
+
+                    # A Side
+                    self.__add_plane(
+                        texcoords=[
                             Vector2(0.0, 0.0),
+                            Vector2(1.0, 0.0),
                             Vector2(0.0, 1.0),
-                        ]
+                            Vector2(1.0, 1.0),
+                        ],
+                        x=float(x), y=float(z), z=float(y+0.5),
+                        roll=90.0,
                     )
-                    self.__json["tiles"].append(
-                        {
-                            "center_x": float(x),
-                            "center_y": float(y),
-                            "center_z": float(z),
-                            "size": 1.0,
-                        }
-                    )
-                    self.__triangles.extend(
-                        c.get_triangles(
-                            offset=Vector3(
-                                x=float(x),
-                                y=float(z),
-                                z=float(y),
-                            )
-                        )
-                    )
+
 
         # Debug Information
         print(
             f"Created a Chunk of {self.__size}x{self.__size}"
         )
+
+    def __add_plane(
+        self,
+        texcoords,
+        scale=1.0,
+        x=0.0, y=0.0, z=0.0,
+        yaw=0.0, pitch=0.0, roll=0.0,
+    ):
+        """
+        """
+
+        p = Plane(
+            scale,
+            texcoords=texcoords
+        )
+        self.__json["tiles"].append(
+            {
+                "center_x": float(x),
+                "center_y": float(y),
+                "center_z": float(z),
+                "size": scale,
+            }
+        )
+        self.__triangles.extend(
+            p.get_triangles(                            
+                offset=Vector3(
+                    x=float(x),
+                    y=float(y),
+                    z=float(z),
+                ),
+                yaw=yaw,
+                pitch=pitch,
+                roll=roll,
+            )
+        )
+
 
     def clean(self):
         """
