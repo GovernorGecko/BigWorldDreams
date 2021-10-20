@@ -7,7 +7,7 @@
 import json
 import os
 
-from .MultiD.src.cube import Cube
+# from .MultiD.src.cube import Cube
 from .MultiD.src.plane import Plane
 from .MultiD.src.vector import Vector3, Vector2
 from .ObjFile.src.generator import Generator
@@ -107,7 +107,6 @@ class Chunk:
                         roll=90.0,
                     )
 
-
         # Debug Information
         print(
             f"Created a Chunk of {self.__size}x{self.__size}"
@@ -136,7 +135,7 @@ class Chunk:
             }
         )
         self.__triangles.extend(
-            p.get_triangles(                            
+            p.get_triangles(
                 offset=Vector3(
                     x=float(x),
                     y=float(y),
@@ -147,7 +146,6 @@ class Chunk:
                 roll=roll,
             )
         )
-
 
     def clean(self):
         """
