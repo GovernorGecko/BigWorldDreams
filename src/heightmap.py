@@ -80,7 +80,7 @@ def create_heightmap(chunk_count, chunk_size, name, path="."):
             # Build the chunk
             chunk = Chunk(
                 chunk_name, chunk_data, minimum_height=minimum_height,
-                top_only=True
+                top_only=False
             )
 
             # Store the obj file

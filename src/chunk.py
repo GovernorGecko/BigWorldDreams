@@ -76,36 +76,110 @@ class Chunk:
                     raise ValueError(
                         "height_data must be a 2d List of Floats."
                     )
-                z_max = int(
-                    (height_data[y][x] - minimum_height) / self.__block_size
-                )
+                z_max = self.get_max(x, y)
                 z_min = -1
                 if top_only:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
 
-                    # Top
-                    self.__add_plane(
-                        texcoords=[
-                            Vector2(0.0, 0.0),
-                            Vector2(1.0, 0.0),
-                            Vector2(0.0, 1.0),
-                            Vector2(1.0, 1.0),
-                        ],
-                        x=float(x), y=float(z+0.5), z=float(y)
-                    )
+                    # Top only if on z_max
+                    if z == z_max:
+                        self.__add_plane(
+                            texcoords=[
+                                Vector2(0.0, 0.0),
+                                Vector2(1.0, 0.0),
+                                Vector2(0.0, 1.0),
+                                Vector2(1.0, 1.0),
+                            ],
+                            x=float(x), y=float(z+0.5), z=float(y)
+                        )
 
-                    # A Side
-                    self.__add_plane(
-                        texcoords=[
-                            Vector2(0.0, 0.0),
-                            Vector2(1.0, 0.0),
-                            Vector2(0.0, 1.0),
-                            Vector2(1.0, 1.0),
-                        ],
-                        x=float(x), y=float(z), z=float(y+0.5),
-                        roll=90.0,
-                    )
+                    # Bottom only if on z_min + 1
+                    if z == z_min + 1:
+                        self.__add_plane(
+                            texcoords=[
+                                Vector2(0.0, 0.0),
+                                Vector2(1.0, 0.0),
+                                Vector2(0.0, 1.0),
+                                Vector2(1.0, 1.0),
+                            ],
+                            x=float(x), y=float(z-0.5), z=float(y)
+                        )
+
+                    # Y Max Side
+                    if (
+                        y == self.__size - 1 or
+                        (
+                            y < self.__size - 1 and
+                            z > self.get_max(x, y + 1)
+                        )
+                    ):
+                        self.__add_plane(
+                            texcoords=[
+                                Vector2(0.0, 0.0),
+                                Vector2(1.0, 0.0),
+                                Vector2(0.0, 1.0),
+                                Vector2(1.0, 1.0),
+                            ],
+                            x=float(x), y=float(z), z=float(y+0.5),
+                            roll=90.0,
+                        )
+                    # Y Min Side
+                    if (
+                        y == 0 or
+                        (
+                            y > 0 and
+                            z > self.get_max(x, y - 1)
+                        )
+                    ):
+                        self.__add_plane(
+                            texcoords=[
+                                Vector2(0.0, 0.0),
+                                Vector2(1.0, 0.0),
+                                Vector2(0.0, 1.0),
+                                Vector2(1.0, 1.0),
+                            ],
+                            x=float(x), y=float(z), z=float(y-0.5),
+                            roll=90.0,
+                        )
+
+                    # X Max Side
+                    if (
+                        x == self.__size - 1 or
+                        (
+                            x < self.__size - 1 and
+                            z > self.get_max(x + 1, y)
+                        )
+                    ):
+                        self.__add_plane(
+                            texcoords=[
+                                Vector2(0.0, 0.0),
+                                Vector2(1.0, 0.0),
+                                Vector2(0.0, 1.0),
+                                Vector2(1.0, 1.0),
+                            ],
+                            x=float(x+0.5), y=float(z), z=float(y),
+                            yaw=90.0,
+                        )
+
+                    # X Min Side
+                    if (
+                        x == 0 or
+                        (
+                            x > 0 and
+                            x > self.get_max(x - 1 , y)
+                        )
+                    ):
+                        self.__add_plane(
+                            texcoords=[
+                                Vector2(0.0, 0.0),
+                                Vector2(1.0, 0.0),
+                                Vector2(0.0, 1.0),
+                                Vector2(1.0, 1.0),
+                            ],
+                            x=float(x-0.5), y=float(z), z=float(y),
+                            yaw=90.0,
+                        )
 
         # Debug Information
         print(
@@ -162,6 +236,15 @@ class Chunk:
                 total_occurrences += 1
         # return self.__triangles
         return total_occurrences
+
+    def get_max(self, x, y):
+        """
+        """
+        return int(
+                    (
+                        self.__height_data[y][x] - self.__minimum_height) /
+                        self.__block_size
+                )
 
     def get_triangles(self):
         """
