@@ -40,9 +40,9 @@ class Chunk:
         block_size=0.2, minimum_height=0.0, top_only=False
     ):
 
-        print(height_data)
-        print(minimum_height)
-        print(block_size)
+        # print(height_data)
+        # print(minimum_height)
+        # print(block_size)
 
         self.__block_size = block_size
         self.__height_data = height_data
@@ -167,7 +167,7 @@ class Chunk:
                         x == 0 or
                         (
                             x > 0 and
-                            x > self.get_max(x - 1 , y)
+                            z > self.get_max(x - 1, y)
                         )
                     ):
                         self.__add_plane(
@@ -242,8 +242,8 @@ class Chunk:
         """
         return int(
                     (
-                        self.__height_data[y][x] - self.__minimum_height) /
-                        self.__block_size
+                        self.__height_data[y][x] - self.__minimum_height
+                    ) / self.__block_size
                 )
 
     def get_triangles(self):

@@ -6,12 +6,10 @@ These can be Top Only, or filled in
 Each Tile comes with a JSON file that is list of array of heights (if caves)
 
 # TODO
-- Shape definitions
-    - Sides
-- Atlas File Creation
-    - Map pieces to shape sides
+- Boxes with just outsides
+- Atlas File Creation?
+- Implement Atlas
 - Shapes
     - Cube
     - Half Cube
     - Wedge
-- Fix TexCoords in Chunk

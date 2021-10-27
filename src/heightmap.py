@@ -5,7 +5,7 @@
 import json
 import os
 
-from perlin_noise import PerlinNoise
+from perlin_noise.perlin_noise import PerlinNoise
 
 from .chunk import Chunk
 from .MultiD.src.vector import Vector2
