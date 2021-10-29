@@ -8,7 +8,7 @@ import os
 
 from src.atlas import Atlas
 # from src.chunk import Chunk
-from src.heightmap import create_heightmap
+# from src.heightmap import create_heightmap
 
 atlas = Atlas("./files")
 atlas.add_image("test.png")

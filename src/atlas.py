@@ -8,7 +8,10 @@ from PIL import Image
 
 class Atlas():
 
-    __slots__ = ["__base_path", "__images"]
+    __slots__ = [
+        "__base_path",
+        "__image",
+    ]
 
     def __init__(self, base_path="./", size=1024):
 
@@ -27,6 +30,9 @@ class Atlas():
         # Set our base path
         self.__base_path = base_path
 
+        # Create our image
+        self.__image = Image.new(mode="RGBA", size=(size, size))
+
     def add_image(self, filename, path=""):
         """
         """
@@ -42,11 +48,21 @@ class Atlas():
 
         # Image information
         with Image.open(path_to_file) as im:
-            print(im.width)
+            print(self.get_open_pixel(im))
 
-        
-
-
-
+    def get_open_pixel(self, image):
+        """
+        """
+        for x in range(self.__image.width):
+            for y in range(self.__image.height):
+                valid_location = True
+                for z in range(image.width):
+                    for w in range(image.height):
+                        if self.__image.getpixel((x + z, y + w)) != (0, 0, 0, 0):
+                            valid_location = False
+                            break
+                    if not valid_location:
+                        break
+        return (x, y)
 
 
