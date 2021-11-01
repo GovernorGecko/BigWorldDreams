@@ -10,14 +10,16 @@ class Atlas():
 
     __slots__ = [
         "__base_path",
+        "__json",
         "__image",
     ]
 
-    def __init__(self, base_path="./", size=1024):
+    def __init__(self, base_path="./", name="atlas", size=1024):
 
         # Is our base path, valid?
         if not os.path.exists(base_path):
             raise ValueError("Please make sure path exists.")
+
         # Size must be an int, and a power of 2
         elif (
             not isinstance(size, int) or
@@ -33,36 +35,97 @@ class Atlas():
         # Create our image
         self.__image = Image.new(mode="RGBA", size=(size, size))
 
-    def add_image(self, filename, path=""):
+        # Json
+        self.__json = {
+            "name": name,
+            "textures": [],
+        }
+
+    def add_image(self, filename, name="", sub_path=""):
         """
         """
 
         # Path to File
         path_to_file = os.path.join(
-            self.__base_path, path, filename
+            self.__base_path, sub_path, filename
         )
 
         # Exists?
         if not os.path.exists(path_to_file):
             raise ValueError(f"Please make sure {path_to_file} exists.")
 
+        # If we didn't pass a name, we use filename as the name
+        if name == "":
+            name = filename
+
         # Image information
         with Image.open(path_to_file) as im:
-            print(self.get_open_pixel(im))
 
-    def get_open_pixel(self, image):
-        """
-        """
-        for x in range(self.__image.width):
-            for y in range(self.__image.height):
-                valid_location = True
-                for z in range(image.width):
-                    for w in range(image.height):
-                        if self.__image.getpixel((x + z, y + w)) != (0, 0, 0, 0):
-                            valid_location = False
-                            break
-                    if not valid_location:
+            # This image too large?
+            if (
+                im.width > self.__image.width or
+                im.height > self.__image.height
+            ):
+                print(
+                    f"Could not add {filename}, doesn't fit base image size."
+                )
+                return False
+
+            # Iterate our stored image, looking for our first open pixel.
+            for x in range(self.__image.width):
+                for y in range(self.__image.height):
+
+                    # Found a spot?
+                    spot_found = True
+
+                    # Iterate our texture, looking for a spot.
+                    for z in range(im.width):
+                        for w in range(im.height):
+
+                            pixel_x = x + w
+                            pixel_y = y + z
+
+                            if (
+                                pixel_x >= self.__image.width or
+                                pixel_y >= self.__image.height or
+                                self.__image.getpixel(
+                                    (pixel_x, pixel_y)) != (0, 0, 0, 0)
+                            ):
+                                spot_found = False
+                                break
+                        else:
+                            continue
                         break
-        return (x, y)
 
+                    # Success!
+                    if spot_found:
+                        self.__image.paste(im, (x, y))
+                        self.__json["textures"].append(
+                            {
+                                "name": name,
+                                "x": x,
+                                "y": y,
+                            }
+                        )
+                        return True
 
+                else:
+                    continue
+                break
+
+            # Failure
+            print(f"Could not add {filename}, because there was no open spot.")
+            return False
+
+    def get_json(self):
+        """
+        """
+        return self.__json
+
+    def get_texture(self, name):
+        """
+        """
+        for texture in self.__json["textures"]:
+            if texture["name"] == name:
+                return texture
+        return None
