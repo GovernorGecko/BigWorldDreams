@@ -84,6 +84,16 @@ class Chunk:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
 
+                    # Store Collision data
+                    self.__json["tiles"].append(
+                        {
+                            "center_x": float(x),
+                            "center_y": float(y),
+                            "center_z": float(z),
+                            "size": 1.0,
+                        }
+                    )
+
                     # Top only if on z_max
                     if z == z_max:
                         self.__add_plane(
@@ -178,18 +188,13 @@ class Chunk:
                 yaw, pitch, roll
         """
 
+        # Create a Plane
         p = Plane(
             scale,
             texcoords=texcoords
         )
-        self.__json["tiles"].append(
-            {
-                "center_x": float(x),
-                "center_y": float(y),
-                "center_z": float(z),
-                "size": scale,
-            }
-        )
+
+        # Add the Triangle
         self.__triangles.extend(
             p.get_triangles(
                 offset=Vector3(
