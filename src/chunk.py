@@ -31,12 +31,13 @@ class Chunk:
     """
 
     __slots__ = [
+        "__atlas_ref",
         "__block_size", "__height_data", "__json", "__minimum_height",
         "__name", "__size", "__top_only", "__triangles",
     ]
 
     def __init__(
-        self, name, height_data,
+        self, name, height_data, atlas,
         block_size=0.2, minimum_height=0.0, top_only=False
     ):
 
@@ -44,6 +45,7 @@ class Chunk:
         # print(minimum_height)
         # print(block_size)
 
+        self.__atlas_ref = atlas
         self.__block_size = block_size
         self.__height_data = height_data
         self.__json = {
@@ -85,24 +87,14 @@ class Chunk:
                     # Top only if on z_max
                     if z == z_max:
                         self.__add_plane(
-                            texcoords=[
-                                Vector2(0.0, 0.0),
-                                Vector2(1.0, 0.0),
-                                Vector2(0.0, 1.0),
-                                Vector2(1.0, 1.0),
-                            ],
+                            texcoords=atlas.get_texcoords("grass_top"),
                             x=float(x), y=float(z+0.5), z=float(y)
                         )
 
                     # Bottom only if on z_min + 1
                     if z == z_min + 1:
                         self.__add_plane(
-                            texcoords=[
-                                Vector2(0.0, 0.0),
-                                Vector2(1.0, 0.0),
-                                Vector2(0.0, 1.0),
-                                Vector2(1.0, 1.0),
-                            ],
+                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
                             x=float(x), y=float(z-0.5), z=float(y)
                         )
 
@@ -115,12 +107,7 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=[
-                                Vector2(0.0, 0.0),
-                                Vector2(1.0, 0.0),
-                                Vector2(0.0, 1.0),
-                                Vector2(1.0, 1.0),
-                            ],
+                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
                             x=float(x), y=float(z), z=float(y+0.5),
                             roll=90.0,
                         )
@@ -133,12 +120,7 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=[
-                                Vector2(0.0, 0.0),
-                                Vector2(1.0, 0.0),
-                                Vector2(0.0, 1.0),
-                                Vector2(1.0, 1.0),
-                            ],
+                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
                             x=float(x), y=float(z), z=float(y-0.5),
                             roll=90.0,
                         )
@@ -152,12 +134,7 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=[
-                                Vector2(0.0, 0.0),
-                                Vector2(1.0, 0.0),
-                                Vector2(0.0, 1.0),
-                                Vector2(1.0, 1.0),
-                            ],
+                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
                             x=float(x+0.5), y=float(z), z=float(y),
                             yaw=90.0,
                         )
@@ -171,12 +148,7 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=[
-                                Vector2(0.0, 0.0),
-                                Vector2(1.0, 0.0),
-                                Vector2(0.0, 1.0),
-                                Vector2(1.0, 1.0),
-                            ],
+                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
                             x=float(x-0.5), y=float(z), z=float(y),
                             yaw=90.0,
                         )
@@ -194,6 +166,16 @@ class Chunk:
         yaw=0.0, pitch=0.0, roll=0.0,
     ):
         """
+        parameters
+            list[Vector2]
+                texcoords
+            (optional)
+            float
+                scale
+            float
+                x, y, z
+            float
+                yaw, pitch, roll
         """
 
         p = Plane(
@@ -239,6 +221,11 @@ class Chunk:
 
     def get_max(self, x, y):
         """
+        parameters
+            int
+                x, y
+        returns
+            int
         """
         return int(
                     (
@@ -289,7 +276,7 @@ class Chunk:
         # Obj Generator
         generator = Generator(
             self.__name,
-            image_name="chunk.png"
+            image_name=self.__atlas_ref.get_filename()
         )
 
         # Iterate Triangles, generating obj file

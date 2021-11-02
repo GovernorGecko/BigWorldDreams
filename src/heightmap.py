@@ -11,7 +11,7 @@ from .chunk import Chunk
 from .MultiD.src.vector import Vector2
 
 
-def create_heightmap(chunk_count, chunk_size, name, path="."):
+def create_heightmap(chunk_count, chunk_size, name, atlas, path="."):
     """
     parameters
         int
@@ -79,7 +79,8 @@ def create_heightmap(chunk_count, chunk_size, name, path="."):
 
             # Build the chunk
             chunk = Chunk(
-                chunk_name, chunk_data, minimum_height=minimum_height,
+                chunk_name, chunk_data, atlas,
+                minimum_height=minimum_height,
                 top_only=False
             )
 
