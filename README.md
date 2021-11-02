@@ -7,8 +7,7 @@ Each Tile comes with a JSON file that is list of array of heights (if caves)
 
 # TODO
 - Atlas File Creation?
-    - https://www.ritambhara.in/check-if-number-is-a-power-of-2/
-- Implement Atlas
+- Integrate Atlas into Chunk
 - Shapes
     - Cube
     - Half Cube

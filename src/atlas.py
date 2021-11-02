@@ -2,11 +2,17 @@
 atlas.py
 """
 
+import math
 import os
+
 from PIL import Image
+
+from .MultiD.src.vector import Vector2
 
 
 class Atlas():
+    """
+    """
 
     __slots__ = [
         "__base_path",
@@ -23,7 +29,8 @@ class Atlas():
         # Size must be an int, and a power of 2
         elif (
             not isinstance(size, int) or
-            size <= 0
+            size <= 0 or
+            not float(math.log(size, 2)).is_integer()
         ):
             raise ValueError(
                 "Size must be greater than 0, a power of 2, and an int."
@@ -103,8 +110,11 @@ class Atlas():
                         self.__json["textures"].append(
                             {
                                 "name": name,
-                                "x": x,
-                                "y": y,
+                                "x_min": x / self.__image.width,
+                                "y_min": y / self.__image.height,
+                                "x_max": (x + im.width) / self.__image.width,
+                                "y_max": (y + im.height) / self.__image.height,
+
                             }
                         )
                         return True
@@ -122,10 +132,27 @@ class Atlas():
         """
         return self.__json
 
-    def get_texture(self, name):
+    def get_texture_coords(self, name):
         """
         """
         for texture in self.__json["textures"]:
             if texture["name"] == name:
-                return texture
+                return [
+                    Vector2(
+                        float(texture["x_min"]),
+                        float(texture["y_min"]),
+                    ),
+                    Vector2(
+                        float(texture["x_max"]),
+                        float(texture["y_min"]),
+                    ),
+                    Vector2(
+                        float(texture["x_min"]),
+                        float(texture["y_max"]),
+                    ),
+                    Vector2(
+                        float(texture["x_max"]),
+                        float(texture["y_max"]),
+                    ),
+                ]
         return None
