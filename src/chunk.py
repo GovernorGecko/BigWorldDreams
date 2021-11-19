@@ -9,7 +9,7 @@ import os
 
 # from .MultiD.src.cube import Cube
 from .MultiD.src.plane import Plane
-from .MultiD.src.vector import Vector3, Vector2
+from .MultiD.src.vector import Vector3
 from .ObjFile.src.generator import Generator
 
 
@@ -84,6 +84,16 @@ class Chunk:
                     z_min = z_max - 1
                 for z in range(z_max, z_min, -1):
 
+                    # Store Collision data
+                    self.__json["tiles"].append(
+                        {
+                            "center_x": float(x),
+                            "center_y": float(y),
+                            "center_z": float(z),
+                            "size": 1.0,
+                        }
+                    )
+
                     # Top only if on z_max
                     if z == z_max:
                         self.__add_plane(
@@ -94,7 +104,9 @@ class Chunk:
                     # Bottom only if on z_min + 1
                     if z == z_min + 1:
                         self.__add_plane(
-                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
+                            texcoords=atlas.get_texcoords(
+                                "grass_sides_and_bottom"
+                            ),
                             x=float(x), y=float(z-0.5), z=float(y)
                         )
 
@@ -107,7 +119,9 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
+                            texcoords=atlas.get_texcoords(
+                                "grass_sides_and_bottom"
+                            ),
                             x=float(x), y=float(z), z=float(y+0.5),
                             roll=90.0,
                         )
@@ -120,7 +134,9 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
+                            texcoords=atlas.get_texcoords(
+                                "grass_sides_and_bottom"
+                            ),
                             x=float(x), y=float(z), z=float(y-0.5),
                             roll=90.0,
                         )
@@ -134,7 +150,9 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
+                            texcoords=atlas.get_texcoords(
+                                "grass_sides_and_bottom"
+                            ),
                             x=float(x+0.5), y=float(z), z=float(y),
                             yaw=90.0,
                         )
@@ -148,7 +166,9 @@ class Chunk:
                         )
                     ):
                         self.__add_plane(
-                            texcoords=atlas.get_texcoords("grass_sides_and_bottom"),
+                            texcoords=atlas.get_texcoords(
+                                "grass_sides_and_bottom"
+                            ),
                             x=float(x-0.5), y=float(z), z=float(y),
                             yaw=90.0,
                         )
@@ -178,18 +198,13 @@ class Chunk:
                 yaw, pitch, roll
         """
 
+        # Create a Plane
         p = Plane(
             scale,
             texcoords=texcoords
         )
-        self.__json["tiles"].append(
-            {
-                "center_x": float(x),
-                "center_y": float(y),
-                "center_z": float(z),
-                "size": scale,
-            }
-        )
+
+        # Add the Triangle
         self.__triangles.extend(
             p.get_triangles(
                 offset=Vector3(

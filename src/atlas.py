@@ -140,26 +140,24 @@ class Atlas():
                         normalized_height = im.height / self.__image.height
 
                         # Shaving off
-                        shaved_x = normalized_x / 10
-                        shaved_y = normalized_y / 10
+                        # shaved_x = normalized_x / 10
+                        # shaved_y = normalized_y / 10
 
+                        # Add image to base image
                         self.__image.paste(im, (x, y))
+
+                        # Add data to json
                         self.__json["textures"].append(
                             {
                                 "name": name,
                                 "x_min": normalized_x,
-                                "y_min": (
-                                    self.__image.height - (
-                                        normalized_y
-                                    )
-                                ),
+                                "y_min": 1.0 - normalized_y,
                                 "x_max": normalized_x + normalized_width,
                                 "y_max": (
-                                    self.__image.height - (
-                                        normalized_y + normalized_height
-                                    )
-                                ),
-
+                                    1.0 -
+                                    normalized_y -
+                                    normalized_height
+                                )
                             }
                         )
                         return True
