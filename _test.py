@@ -14,7 +14,7 @@ print(atlas.get_json())
 # print(atlas.get_texture_coords("test.png"))
 atlas.save("./")
 
-path_to_store = "./tests"
+path_to_store = "./objfiles"
 
 if not os.path.exists(path_to_store):
     os.mkdir(path_to_store)
