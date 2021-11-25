@@ -13,7 +13,7 @@ paths = {
     "results": "c:/repos/BigWorldDreams/results/",
 }
 
-area_size = 4
+area_size = 8
 tile_size = 4
 
 atlas = Atlas("./files", size=1024)
@@ -27,6 +27,9 @@ path_to_store = "./results"
 
 if not os.path.exists(path_to_store):
     os.mkdir(path_to_store)
+else:
+    for file in os.scandir(path_to_store):
+        os.remove(file.path)
 
 create_heightmap(area_size, tile_size, "tile", atlas, path_to_store)
 
