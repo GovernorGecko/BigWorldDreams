@@ -8,6 +8,19 @@ import bpy
 import os
 import sys
 
+name = "Collection"
+remove_collection_objects = True
+
+coll = bpy.data.collections.get(name)
+
+if coll:
+    if remove_collection_objects:
+        obs = [o for o in coll.objects if o.users == 1]
+        while obs:
+            bpy.data.objects.remove(obs.pop())
+
+    bpy.data.collections.remove(coll)
+
 argv = sys.argv
 # get all args after "--"
 argv = argv[argv.index("--") + 1:]

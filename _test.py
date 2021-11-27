@@ -14,8 +14,8 @@ paths = {
     "results": "c:/repos/BigWorldDreams/results/",
 }
 
-area_size = 4
-tile_size = 16
+area_size = 2
+tile_size = 4
 
 atlas = Atlas("./files", size=1024)
 atlas.add_image("grass_top.png", "grass_top")
@@ -46,12 +46,13 @@ create_heightmap(
 # results_path = input("Results Path: ")
 
 stream = os.popen(
+    f'cd "{paths["results"]}" && '
     f'"{paths["blender"]}" --background '
     f'--python "{paths["script"]}" '
-    f'-- "{paths["results"]}"'
+    f'-- "./"'
 )
 output = stream.read()
-# print(output)
+#print(output)
 
 
 def move_results_to_subfolder(file_type, subfolder):
