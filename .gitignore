@@ -132,8 +132,4 @@ dmypy.json
 assets
 
 # Exports
-results/*.fbx
-results/*.mtl
-results/*.obj
-results/*.json
-results/*.png
+results/*
