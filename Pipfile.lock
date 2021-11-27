@@ -33,10 +33,10 @@
         },
         "perlin-noise": {
             "hashes": [
-                "sha256:9f492832f91fc568d58b96f21f66aca9922ccbd0c6fb082eb65fb28b9778b631"
+                "sha256:6589caf78d3fef285e7cdc0762e8060251cbc529b5e306d7bfdebde82abb928d"
             ],
             "index": "pypi",
-            "version": "==1.8"
+            "version": "==1.9"
         },
         "pillow": {
             "hashes": [

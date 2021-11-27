@@ -75,7 +75,7 @@ def create_heightmap(chunk_count, chunk_size, name, atlas, path="."):
             ]
 
             # Chunk Name
-            chunk_name = f"chunk_{i}"
+            chunk_name = f"{name}_{i}"
 
             # Build the chunk
             chunk = Chunk(
