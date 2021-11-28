@@ -14,8 +14,8 @@ paths = {
     "results": "c:/repos/BigWorldDreams/results/",
 }
 
-area_size = 2
-tile_size = 4
+area_size = 4
+tile_size = 16
 
 atlas = Atlas("./files", size=1024)
 atlas.add_image("grass_top.png", "grass_top")
@@ -52,7 +52,7 @@ stream = os.popen(
     f'-- "./"'
 )
 output = stream.read()
-#print(output)
+# print(output)
 
 
 def move_results_to_subfolder(file_type, subfolder):
@@ -88,4 +88,11 @@ move_results_to_subfolder("obj", "obj")
 move_results_to_subfolder("mtl", "obj")
 move_results_to_subfolder("fbx", "fbx")
 move_results_to_subfolder("json", "json")
-# shutil.copy(os.path.join(paths["results"], "atlas.png"), os.path.join(paths["results"], "obj", "atlas.png"))
+
+# shutil.copy(
+#   os.path.join(
+#       paths["results"], "atlas.png"
+#   ), os.path.join(
+#       paths["results"], "obj", "atlas.png"
+#   )
+# )
