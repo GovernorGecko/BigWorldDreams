@@ -46,9 +46,10 @@ create_heightmap(
 # results_path = input("Results Path: ")
 
 stream = os.popen(
+    f'cd "{paths["results"]}" && '
     f'"{paths["blender"]}" --background '
     f'--python "{paths["script"]}" '
-    f'-- "{paths["results"]}"'
+    f'-- "./"'
 )
 output = stream.read()
 # print(output)
@@ -87,4 +88,11 @@ move_results_to_subfolder("obj", "obj")
 move_results_to_subfolder("mtl", "obj")
 move_results_to_subfolder("fbx", "fbx")
 move_results_to_subfolder("json", "json")
-# shutil.copy(os.path.join(paths["results"], "atlas.png"), os.path.join(paths["results"], "obj", "atlas.png"))
+
+# shutil.copy(
+#   os.path.join(
+#       paths["results"], "atlas.png"
+#   ), os.path.join(
+#       paths["results"], "obj", "atlas.png"
+#   )
+# )
