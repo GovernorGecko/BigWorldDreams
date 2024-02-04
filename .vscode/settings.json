@@ -1,7 +1,13 @@
 {
-    "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true,
-    "python.linting.flake8Path": "${workspaceFolder}/.venv/Scripts/flake8",
-    "python.linting.pylintEnabled": false,
-    "editor.insertSpaces": true,
+  "editor.defaultFormatter": null,
+  "editor.formatOnSave": false,
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.formatting.provider": "none",
+  "python.formatting.blackPath": "./.venv/Scripts/black.exe",
+  "terminal.integrated.env.windows": {
+    "PIPENV_VENV_IN_PROJECT": "1"
+  }
 }
