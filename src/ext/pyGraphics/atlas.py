@@ -12,10 +12,10 @@ import os
 
 from PIL import Image
 
-from .MultiD.src.vector import Vector2
+from ..pyMultiD.vector import Vector2f
 
 
-class Atlas():
+class Atlas:
     """
     parameters
         (optional)
@@ -34,32 +34,42 @@ class Atlas():
     ]
 
     def __init__(self, base_path="./", name="atlas", size=1024):
-
-        # Is our base path, valid?
         if not os.path.exists(base_path):
-            raise ValueError("Please make sure path exists.")
+            raise ValueError("Please make sure base path exists.")
 
         # Size must be an int, and a power of 2
         elif (
-            not isinstance(size, int) or
-            size <= 0 or
-            not float(math.log(size, 2)).is_integer()
+            not isinstance(size, int)
+            or size <= 0
+            or not float(math.log(size, 2)).is_integer()
         ):
-            raise ValueError(
-                "Size must be greater than 0, a power of 2, and an int."
-            )
+            raise ValueError("Size must be greater than 0, a power of 2, and an int.")
 
-        # Set our base path
+        # Used when adding images
         self.__base_path = base_path
 
         # Create our image
         self.__image = Image.new(mode="RGBA", size=(size, size))
 
-        # Json
+        # JSON that stores location of each added image
         self.__json = {
             "name": name,
             "textures": [],
         }
+
+    def __repr__(self):
+        """
+        returns
+            string
+        """
+        return self.__str__()
+
+    def __str__(self):
+        """
+        returns
+            string
+        """
+        return f"{self.get_json()}"
 
     def add_image(self, filename, name="", sub_path=""):
         """
@@ -76,12 +86,8 @@ class Atlas():
             bool
         """
 
-        # Path to File
-        path_to_file = os.path.join(
-            self.__base_path, sub_path, filename
-        )
+        path_to_file = os.path.join(self.__base_path, sub_path, filename)
 
-        # Exists?
         if not os.path.exists(path_to_file):
             raise ValueError(f"Please make sure {path_to_file} exists.")
 
@@ -89,38 +95,29 @@ class Atlas():
         if name == "":
             name = filename
 
-        # Image information
         with Image.open(path_to_file) as im:
-
             # This image too large?
-            if (
-                im.width > self.__image.width or
-                im.height > self.__image.height
-            ):
-                print(
-                    f"Could not add {filename}, doesn't fit base image size."
-                )
+            if im.width > self.__image.width or im.height > self.__image.height:
+                print(f"Could not add {filename}, doesn't fit base image size.")
                 return False
 
             # Iterate our stored image, looking for our first open pixel.
             for x in range(self.__image.width):
                 for y in range(self.__image.height):
-
                     # Found a spot?
                     spot_found = True
 
                     # Iterate our texture, looking for a spot.
                     for z in range(im.width):
                         for w in range(im.height):
-
                             pixel_x = x + w
                             pixel_y = y + z
 
                             if (
-                                pixel_x >= self.__image.width or
-                                pixel_y >= self.__image.height or
-                                self.__image.getpixel(
-                                    (pixel_x, pixel_y)) != (0, 0, 0, 0)
+                                pixel_x >= self.__image.width
+                                or pixel_y >= self.__image.height
+                                or self.__image.getpixel((pixel_x, pixel_y))
+                                != (0, 0, 0, 0)
                             ):
                                 spot_found = False
                                 break
@@ -130,12 +127,11 @@ class Atlas():
 
                     # Success!
                     if spot_found:
-
                         # Normalized x/y location of this image
                         normalized_x = x / self.__image.width
                         normalized_y = y / self.__image.height
 
-                        # Normaled size of this image
+                        # Normalized size of this image
                         normalized_width = im.width / self.__image.width
                         normalized_height = im.height / self.__image.height
 
@@ -150,21 +146,16 @@ class Atlas():
                         self.__json["textures"].append(
                             {
                                 "name": name,
-                                "x_min": normalized_x,
-                                "y_min": 1.0 - normalized_y,
-                                "x_max": normalized_x + normalized_width,
-                                "y_max": (
-                                    1.0 -
-                                    normalized_y -
-                                    normalized_height
-                                )
+                                "minimumX": normalized_x,
+                                "minimumY": 1.0 - normalized_y,
+                                "maximumX": normalized_x + normalized_width,
+                                "maximumY": (1.0 - normalized_y - normalized_height),
                             }
                         )
                         return True
 
                 else:
                     continue
-                break
 
             # Failure
             print(f"Could not add {filename}, because there was no open spot.")
@@ -190,26 +181,26 @@ class Atlas():
             string
                 name of the texture
         returns
-            list[Vector2]
+            list[Vector2f]
         """
         for texture in self.__json["textures"]:
             if texture["name"] == name:
                 return [
-                    Vector2(
-                        float(texture["x_min"]),
-                        float(texture["y_min"]),
+                    Vector2f(
+                        float(texture["minimumX"]),
+                        float(texture["minimumY"]),
                     ),
-                    Vector2(
-                        float(texture["x_max"]),
-                        float(texture["y_min"]),
+                    Vector2f(
+                        float(texture["maximumX"]),
+                        float(texture["minimumY"]),
                     ),
-                    Vector2(
-                        float(texture["x_min"]),
-                        float(texture["y_max"]),
+                    Vector2f(
+                        float(texture["minimumX"]),
+                        float(texture["maximumY"]),
                     ),
-                    Vector2(
-                        float(texture["x_max"]),
-                        float(texture["y_max"]),
+                    Vector2f(
+                        float(texture["maximumX"]),
+                        float(texture["maximumY"]),
                     ),
                 ]
         return None
@@ -222,19 +213,11 @@ class Atlas():
                 path to store our atlas
         """
 
-        # Is path a string?
         if not isinstance(path, str):
             raise ValueError("Path must be a string.")
 
-        # Build the path
         path_to_store = self.__base_path
         if path != "":
             path_to_store = path
 
-        # Save it!
-        self.__image.save(
-            os.path.join(
-                path_to_store,
-                f"{self.__json['name']}.png"
-            )
-        )
+        self.__image.save(os.path.join(path_to_store, self.get_filename()))

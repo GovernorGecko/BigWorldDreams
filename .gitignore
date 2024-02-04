@@ -133,3 +133,6 @@ assets
 
 # Exports
 results/*
+
+# atlas
+atlas/*
