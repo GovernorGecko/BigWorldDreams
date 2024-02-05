@@ -3,7 +3,7 @@ entity.py
 """
 
 from ...ext.pyHelpers.files import dump_json_data
-from ...ext.pyHelpers.trigonometry import get_velocity_of_angle
+from ...ext.pyHelpers.trigonometry import get_vector2f_of_angle
 from ...ext.pyHelpers.type_validation import type_validation
 from ...ext.pyMultiD.vector import Vector2f
 
@@ -62,7 +62,7 @@ class Entity:
                     }
                 )
 
-            end = get_velocity_of_angle(joint.get_rotation())
+            end = get_vector2f_of_angle(joint.get_rotation())
             end *= joint.get_length()
             end += start
 

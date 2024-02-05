@@ -5,7 +5,7 @@ circle.py
 from ...pyGraphics.shape import Shape
 from ...pyGraphics.shapes.triangle import generate_triangle
 from ...pyGraphics.vertex import VertexPositionNormalTexture
-from ...pyHelpers.trigonometry import get_velocity_of_angle
+from ...pyHelpers.trigonometry import get_vector2f_of_angle
 from ...pyHelpers.type_validation import type_validation
 from ...pyMultiD.vector import Vector2f, Vector3f
 
@@ -37,7 +37,7 @@ def generate_circle(radius, points):
     current_angle = 0.0
     for _ in range(points):
         # We calculate the Velocity (Vector2f) given the radius/angle
-        point_velocity = get_velocity_of_angle(current_angle)
+        point_velocity = get_vector2f_of_angle(current_angle)
         point_velocity *= radius
         point_vectors.append(point_velocity)
         current_angle += angle_between_points

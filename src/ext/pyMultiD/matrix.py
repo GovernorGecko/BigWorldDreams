@@ -73,7 +73,7 @@ class Matrix:
         """
         return len(self.__matrix[0])
 
-    def get_column_values(self, column: int) -> list["float | int"]:
+    def get_column_values(self, column: int) -> list[float | int]:
         """
         parameters
             int
@@ -91,7 +91,7 @@ class Matrix:
         """
         return len(self.__matrix)
 
-    def get_value(self, row: int, column: int) -> "float | int":
+    def get_value(self, row: int, column: int) -> float | int:
         """
         parameters
             int
@@ -103,7 +103,7 @@ class Matrix:
             ValueError(f"{column} or {row} not valid for Matrix")
         return self.__matrix[row][column]
 
-    def get_values_as_list(self) -> "float | int":
+    def get_values_as_list(self) -> float | int:
         """
         returns
             list[float/int]
@@ -136,7 +136,7 @@ class Matrix:
             return False
         return True
 
-    def set_value(self, row: int, column: int, value: "float | int"):
+    def set_value(self, row: int, column: int, value: float | int):
         """
         parameters
             int

@@ -7,7 +7,7 @@ import os
 import shutil
 
 
-def create_or_delete(path: str) -> None:
+def create_or_delete(path: str):
     """
     parameters
         string
@@ -26,7 +26,7 @@ def create_or_delete(path: str) -> None:
                 shutil.rmtree(os.path.join(root, d))
 
 
-def dump_json_data(name: str, path: str, data: dict, indent: int = 4) -> None:
+def dump_json_data(name: str, path: str, data: dict, indent: int = 4):
     """
     parameters
         string
@@ -42,7 +42,7 @@ def dump_json_data(name: str, path: str, data: dict, indent: int = 4) -> None:
         json.dump(data, outfile, indent=indent)
 
 
-def move_files(from_path: str, to_path: str, file_type: str | None = None) -> None:
+def move_files(from_path: str, to_path: str, file_type: str | None = None):
     """
     parameters
         string

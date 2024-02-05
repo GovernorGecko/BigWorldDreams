@@ -13,7 +13,7 @@ class Descriptor:
 
     __slots__ = ["__type", "__value"]
 
-    def __init__(self, type=None):
+    def __init__(self, type: type = None):
         self.__type = type
         self.__value = None
 

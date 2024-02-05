@@ -12,7 +12,7 @@ from ...ext.pyGraphics.shape import Shape
 from ...ext.pyGraphics.shapes.circle import generate_circle
 from ...ext.pyGraphics.shapes.quadrilateral import generate_quadrilateral
 from ...ext.pyGraphics.vertex import VertexPositionNormalTexture
-from ...ext.pyHelpers.trigonometry import get_velocity_of_angle
+from ...ext.pyHelpers.trigonometry import get_vector2f_of_angle
 from ...ext.pyHelpers.type_validation import type_validation
 from ...ext.pyMultiD.vector import Vector2f, Vector3f
 
@@ -166,7 +166,7 @@ class LollipopJoint:
         shape = Shape(VertexPositionNormalTexture)
 
         # Get Rotation as Velocity
-        end = get_velocity_of_angle(self.__rotation)
+        end = get_vector2f_of_angle(self.__rotation)
         end *= self.__length
         end += start
 
@@ -182,7 +182,7 @@ class LollipopJoint:
             shape.add(circle)
 
             # Shape
-            stick_offset = get_velocity_of_angle(self.__rotation + 90.0) * 0.1
+            stick_offset = get_vector2f_of_angle(self.__rotation + 90.0) * 0.1
             stick_offset_vf3 = Vector3f(stick_offset.X, stick_offset.Y, 0.0)
             stick = generate_quadrilateral(
                 start_vf3 - stick_offset_vf3,
@@ -200,7 +200,7 @@ class LollipopJoint:
             buffer = buffer.normalize() * 0.0
 
             # Shape
-            offset = get_velocity_of_angle(self.__rotation + 90.0) * (
+            offset = get_vector2f_of_angle(self.__rotation + 90.0) * (
                 self.__width / 2.0
             )
             offset_vf3 = Vector3f(offset.X, offset.Y, 0.0)

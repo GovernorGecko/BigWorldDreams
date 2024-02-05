@@ -8,11 +8,13 @@ from .type_validation import type_validation
 from ..pyMultiD.vector import Vector2f, Vector3f
 
 
-def get_forward_vector(phi, theta, up="z"):
+def get_forward_vector3f(phi: float, theta: float, up: str = "z") -> Vector3f:
     """
     parameters
         float
         float
+        (optional)
+        string
     returns
         Vector3f
     """
@@ -44,10 +46,9 @@ def get_forward_vector(phi, theta, up="z"):
         )
 
 
-def get_velocity_of_angle(angle):
+def get_vector2f_of_angle(angle: float) -> Vector2f:
     """
     parameters
-        float
         float
     returns
         Vector2f

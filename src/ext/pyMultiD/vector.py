@@ -218,7 +218,7 @@ class Vector:
             attribute: self.get_attribute(attribute) for attribute in self.__attributes
         }
 
-    def get_attribute(self, attribute: "str | int") -> "float | int":
+    def get_attribute(self, attribute: "str | int") -> float | int:
         """
         parameters
             int/str
@@ -231,7 +231,7 @@ class Vector:
             return self.get_attribute_by_name(attribute)
         raise ValueError("Attribute must be int/str.")
 
-    def get_attribute_by_id(self, id: int) -> "float | int":
+    def get_attribute_by_id(self, id: int) -> float | int:
         """
         parameters
             int
@@ -244,7 +244,7 @@ class Vector:
             )
         return getattr(self, self.__attributes[id])
 
-    def get_attribute_by_name(self, name: str) -> "float | int":
+    def get_attribute_by_name(self, name: str) -> float | int:
         """ "
         parameters
             str
@@ -263,7 +263,7 @@ class Vector:
         """
         return list(self.__attributes)
 
-    def get_values_as_list(self) -> list["float | int"]:
+    def get_values_as_list(self) -> list[float | int]:
         """
         returns
             list<float/int>
@@ -382,7 +382,7 @@ class Vector3f(Vector):
     def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0):
         super().__init__(x, y, z, attributes=["X", "Y", "Z"], attribute_type=float)
 
-    def rotate(self, roll: "float | int", pitch: "float | int", yaw: "float | int"):
+    def rotate(self, roll: float | int, pitch: float | int, yaw: float | int):
         """
         parameters
             float/int
