@@ -15,7 +15,7 @@ class Matrix:
 
     __slots__ = ["__matrix"]
 
-    def __init__(self, rows=1, columns=1):
+    def __init__(self, rows: int = 1, columns: int = 1):
         if (
             not isinstance(columns, int)
             or not isinstance(rows, int)
@@ -26,14 +26,14 @@ class Matrix:
 
         self.__matrix = [[0.0 for _ in range(columns)] for _ in range(rows)]
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         returns
             string
         """
         return str(self.__matrix)
 
-    def __mul__(self, other):
+    def __mul__(self, other: "Matrix") -> "Matrix":
         """
         parameters
             Matrix
@@ -66,51 +66,51 @@ class Matrix:
 
         return new_matrix
 
-    def get_columns_length(self):
+    def get_columns_length(self) -> int:
         """
         returns
             int
         """
         return len(self.__matrix[0])
 
-    def get_column_values(self, column):
+    def get_column_values(self, column: int) -> list["float | int"]:
         """
         parameters
             int
         returns
-            int
+            list[float/int]
         """
         if not self.is_valid_column(column):
             ValueError(f"{column} not valid for Matrix")
         return [row[column] for row in self.__matrix]
 
-    def get_rows_length(self):
+    def get_rows_length(self) -> int:
         """
         returns
             int
         """
         return len(self.__matrix)
 
-    def get_value(self, row, column):
+    def get_value(self, row: int, column: int) -> "float | int":
         """
         parameters
             int
             int
         returns
-            float
+            float/int
         """
         if not self.is_valid_column(column) or not self.is_valid_row(row):
             ValueError(f"{column} or {row} not valid for Matrix")
         return self.__matrix[row][column]
 
-    def get_values_as_list(self):
+    def get_values_as_list(self) -> "float | int":
         """
         returns
-            list
+            list[float/int]
         """
         return [j for sub in self.__matrix for j in sub]
 
-    def is_valid_column(self, column):
+    def is_valid_column(self, column: int) -> bool:
         """
         parameters
             int
@@ -125,7 +125,7 @@ class Matrix:
             return False
         return True
 
-    def is_valid_row(self, row):
+    def is_valid_row(self, row: int) -> bool:
         """
         parameters
             int
@@ -136,15 +136,15 @@ class Matrix:
             return False
         return True
 
-    def set_value(self, row, column, value):
+    def set_value(self, row: int, column: int, value: "float | int"):
         """
         parameters
             int
             int
-            float
+            float/int
         """
         if not self.is_valid_column(column) or not self.is_valid_row(row):
             ValueError(f"{column} or {row} not valid for Matrix")
-        elif not isinstance(value, float):
-            ValueError("Value must be a float")
+        elif not isinstance(value, (float, int)):
+            ValueError("Value must be a float or int.")
         self.__matrix[row][column] = value

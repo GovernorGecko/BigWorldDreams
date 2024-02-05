@@ -4,5 +4,11 @@
 
 ## TODO
 - Add More Type Hints? (LollipopJoints, started Vector)
+	- pyMultiD
+		- Vector
+		- Matrix
+		- AABB
+	- pyHelpers
+	- pyGraphics
 - TypeValidation needs rethinking
 	- The issue comes, if we pass in a list with a list in it, it can get confused.

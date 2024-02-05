@@ -60,7 +60,7 @@ class Vector:
         """
         return f"{self.get()}"
 
-    def __add__(self, other):
+    def __add__(self, other: "Vector | float | int") -> "Vector":
         """
         parameters
             Vector, Float, Int
@@ -151,7 +151,7 @@ class Vector:
         else:
             raise ValueError(f"Expected {type(self)}, int, float, or Matrix")
 
-    def _update(self, other, operator):
+    def _update(self, other: "Vector | float | int", operator: operator):
         """
         parameters
             Vector, int, float
@@ -175,7 +175,7 @@ class Vector:
                 updated_values.get_attribute(attribute),
             )
 
-    def distance(self, other):
+    def distance(self, other: "Vector") -> float:
         """
         parameters
             Vector
@@ -197,7 +197,7 @@ class Vector:
             )
         )
 
-    def dot(self, other):
+    def dot(self, other: "Vector") -> "Vector":
         """
         parameters
             Vector
@@ -218,7 +218,7 @@ class Vector:
             attribute: self.get_attribute(attribute) for attribute in self.__attributes
         }
 
-    def get_attribute(self, attribute):
+    def get_attribute(self, attribute: "str | int") -> "float | int":
         """
         parameters
             int/str
@@ -231,7 +231,7 @@ class Vector:
             return self.get_attribute_by_name(attribute)
         raise ValueError("Attribute must be int/str.")
 
-    def get_attribute_by_id(self, id):
+    def get_attribute_by_id(self, id: int) -> "float | int":
         """
         parameters
             int
@@ -244,7 +244,7 @@ class Vector:
             )
         return getattr(self, self.__attributes[id])
 
-    def get_attribute_by_name(self, name):
+    def get_attribute_by_name(self, name: str) -> "float | int":
         """ "
         parameters
             str
@@ -256,21 +256,21 @@ class Vector:
 
         return getattr(self, name)
 
-    def get_attributes_as_list(self):
+    def get_attributes_as_list(self) -> list[str]:
         """
         returns
             list<str>
         """
         return list(self.__attributes)
 
-    def get_values_as_list(self):
+    def get_values_as_list(self) -> list["float | int"]:
         """
         returns
             list<float/int>
         """
         return list(self.get().values())
 
-    def get_values_as_matrix(self):
+    def get_values_as_matrix(self) -> Matrix:
         """
         returns
             Matrix(Num Properties)x1
@@ -280,21 +280,21 @@ class Vector:
             m.set_value(i, 0, getattr(self, self.__attributes[i]))
         return m
 
-    def magnitude(self):
+    def magnitude(self) -> float:
         """
         returns
             float
         """
         return math.sqrt(sum([math.pow(x, 2) for x in self.get_values_as_list()]))
 
-    def normalize(self):
+    def normalize(self) -> "Vector":
         """
         returns
             Vector
         """
         return self.__truediv__(self.magnitude())
 
-    def scale(self, other):
+    def scale(self, other: "Vector | float | int"):
         """
         parameters
             Vector, int, float
@@ -304,10 +304,11 @@ class Vector:
 
         self._update(other, operator.mul)
 
-    def set_attribute(self, attribute, value):
+    def set_attribute(self, attribute: "int | str", value: "int | float"):
         """
         parameters
             int/str
+            int/float
         """
         if isinstance(attribute, int):
             return self.set_attribute_by_id(attribute, value)
@@ -315,10 +316,11 @@ class Vector:
             return self.set_attribute_by_name(attribute, value)
         raise ValueError("Attribute must be int/str.")
 
-    def set_attribute_by_id(self, id, value):
+    def set_attribute_by_id(self, id: int, value: "int | float"):
         """
         parameters
             int
+            int/float
         """
         if not isinstance(id, int) or id < 0 or id >= len(self.__attributes):
             raise ValueError(
@@ -328,10 +330,11 @@ class Vector:
             raise ValueError(f"Expected {self.__attribute_type} received {type(value)}")
         setattr(self, self.__attributes[id], value)
 
-    def set_attribute_by_name(self, name, value):
+    def set_attribute_by_name(self, name: str, value: "int | float"):
         """ "
         parameters
             str
+            int/float
         """
         if name not in self.__attributes:
             raise ValueError(f"{name} not in {self.__attributes}.")
@@ -339,14 +342,14 @@ class Vector:
             raise ValueError(f"Expected {self.__attribute_type} received {type(value)}")
         setattr(self, name, value)
 
-    def sum(self):
+    def sum(self) -> float:
         """
         returns
             float
         """
         return sum(self.get_values_as_list())
 
-    def translate(self, other):
+    def translate(self, other: "Vector | float | int"):
         """
         parameters
             Vector, int, float
@@ -364,7 +367,7 @@ class Vector2f(Vector):
         float
     """
 
-    def __init__(self, x=0.0, y=0.0):
+    def __init__(self, x: float = 0.0, y: float = 0.0):
         super().__init__(x, y, attributes=["X", "Y"], attribute_type=float)
 
 
@@ -376,10 +379,10 @@ class Vector3f(Vector):
         float
     """
 
-    def __init__(self, x=0.0, y=0.0, z=0.0):
+    def __init__(self, x: float = 0.0, y: float = 0.0, z: float = 0.0):
         super().__init__(x, y, z, attributes=["X", "Y", "Z"], attribute_type=float)
 
-    def rotate(self, roll, pitch, yaw):
+    def rotate(self, roll: "float | int", pitch: "float | int", yaw: "float | int"):
         """
         parameters
             float/int
