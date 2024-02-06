@@ -33,7 +33,7 @@ class Atlas:
         "__image",
     ]
 
-    def __init__(self, base_path="./", name="atlas", size=1024):
+    def __init__(self, base_path: str = "./", name: str = "atlas", size: int = 1024):
         if not os.path.exists(base_path):
             raise ValueError("Please make sure base path exists.")
 

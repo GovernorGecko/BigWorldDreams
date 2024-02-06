@@ -8,7 +8,7 @@ from ..pyHelpers.descriptor import Descriptor
 from ..pyHelpers.type_validation import type_validation
 
 from ..pyMultiD.matrix import Matrix
-from ..pyMultiD.vector import Vector2f, Vector3f
+from ..pyMultiD.vector import Vector, Vector2f, Vector3f
 
 
 class Vertex:
@@ -18,21 +18,21 @@ class Vertex:
         self.__attributes = []
         self.__attribute_types = []
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         returns
             string
         """
         return self.__str__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         returns
             string
         """
         return f"{self.get()}"
 
-    def __eq__(self, other):
+    def __eq__(self, other: "Vertex") -> bool:
         """
         parameters
             Vertex
@@ -47,7 +47,13 @@ class Vertex:
 
         return False
 
-    def _create_attribute(self, attribute, value, attribute_type):
+    def _create_attribute(self, attribute: str, value: Vector, attribute_type: type):
+        """
+        parameters
+            str
+            Vector
+            type
+        """
         if not isinstance(attribute, str):
             raise ValueError("Attribute must be a string.")
         elif type(value) != attribute_type:
@@ -59,10 +65,10 @@ class Vertex:
         setattr(self, attribute, Descriptor(attribute_type))
         setattr(self, attribute, value)
 
-    def get(self):
+    def get(self) -> list[float]:
         """
         returns
-           list(float)
+           list[float]
         """
         return [getattr(self, attribute) for attribute in self.__attributes]
 
@@ -73,13 +79,13 @@ class VertexPosition(Vertex):
         Vector3f
     """
 
-    def __init__(self, position):
+    def __init__(self, position: Vector3f):
         type_validation(position, Vector3f)
 
         super().__init__()
         super()._create_attribute("Position", position, Vector3f)
 
-    def __add__(self, other):
+    def __add__(self, other: Vector3f) -> Vertex:
         """
         parameters
             Vector3f
@@ -88,7 +94,7 @@ class VertexPosition(Vertex):
         """
         return self.__oper(other, operator.add)
 
-    def __mul__(self, other):
+    def __mul__(self, other: Matrix) -> Vertex:
         """
         parameters
             Matrix
@@ -97,10 +103,12 @@ class VertexPosition(Vertex):
         """
         return self.__oper(other, operator.mul)
 
-    def __oper(self, other, operation):
+    def __oper(
+        self, other: Vertex | float | Matrix | Vector3f, operation: operator
+    ) -> Vertex:
         """
         parameters
-            any
+            Vertex/float/Matrix/Vector3f
             operator
         returns
             Vertex
@@ -113,7 +121,7 @@ class VertexPosition(Vertex):
 
         return self
 
-    def rotate(self, roll=0.0, pitch=0.0, yaw=0.0):
+    def rotate(self, roll: float = 0.0, pitch: float = 0.0, yaw: float = 0.0) -> Vertex:
         """
         parameters
             float
@@ -137,7 +145,7 @@ class VertexPosition(Vertex):
 
         return self
 
-    def scale(self, scale=1.0):
+    def scale(self, scale: float = 1.0) -> Vertex:
         """
         parameters
             float
@@ -146,7 +154,7 @@ class VertexPosition(Vertex):
         """
         return self.__mul__(scale)
 
-    def translate(self, translation):
+    def translate(self, translation: Vector3f) -> Vertex:
         """
         parameters
             Vector3f
@@ -163,7 +171,7 @@ class VertexPositionNormal(VertexPosition):
         Vector3f
     """
 
-    def __init__(self, position, normal):
+    def __init__(self, position: Vector3f, normal: Vector3f):
         type_validation(normal, Vector3f)
 
         super().__init__(position)
@@ -178,7 +186,7 @@ class VertexPositionNormalTexture(VertexPositionNormal):
         Vector2f
     """
 
-    def __init__(self, position, normal, texture):
+    def __init__(self, position: Vector3f, normal: Vector3f, texture: Vector2f):
         type_validation(texture, Vector2f)
 
         super().__init__(position, normal)

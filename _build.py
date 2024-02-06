@@ -11,23 +11,26 @@ from src.core.shapes.heightmap import (
     get_slice_from_heightmap,
 )
 
-create_or_delete("./results")
+from src.ext.pyMultiD.aabb import AABB3f
+
+aabb = AABB3f(Vector3f(0.0, 0.0, 0.0), Vector2f(0.0, 0.0))
+
+# create_or_delete("./results")
 
 
-human = generate_human()
-human.set_root(human.get("head_human_large"))
+# human = generate_human()
+# human.set_root(human.get("head_human_large"))
 
 
-human.create_frame("idle1")
+# human.create_frame("idle1")
 
-human.export("chrono_animations", path="../aDream/Content/Objects")
+# human.export("chrono_animations", path="../aDream/Content/Objects")
 
-objfile(
-    human.get("head_human_large").render(Vector2f(0.0, 0.0), False),
-    "c",
-    path="./results",
-)
-
+# objfile(
+#    human.get("head_human_large").render(Vector2f(0.0, 0.0), False),
+#    "c",
+#    path="./results",
+# )
 
 """
 heightmap_json = generate_heightmap_json(20, 20)

@@ -46,7 +46,16 @@ def objfile(
     image_name: str | None = None,
     image_path: str = "./",
     path: str = "./",
-) -> None:
+):
+    """
+    parameters
+        Shape
+        str
+        (optional)
+        str/None
+        str
+        str
+    """
     # Validate Name/Path Type
     type_validation([name, path], str)
 

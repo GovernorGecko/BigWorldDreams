@@ -4,7 +4,7 @@ aabb
 
 from ..pyHelpers.descriptor import Descriptor
 
-from .vector import Vector3f
+from .vector import Vector, Vector3f
 
 
 class AABB:
@@ -12,15 +12,18 @@ class AABB:
     parameters
         Vector
         Vector
-        (optional)
         Type
     """
 
     __slots__ = ["__dict__", "__type"]
 
-    def __init__(self, minimum, maximum, aabb_type):
+    def __init__(self, minimum: Vector, maximum: Vector, aabb_type: type):
         if not isinstance(aabb_type, type):
             raise ValueError("Expected a Type.")
+        elif not isinstance(minimum, Vector) or not isinstance(maximum, Vector):
+            raise ValueError("Maximum/Minimum must be of type Vector.")
+        elif type(minimum) != aabb_type or type(maximum) != aabb_type:
+            raise ValueError(f"Maximum/Minimum must both be of type {aabb_type}")
 
         self.__type = aabb_type
 
@@ -32,21 +35,21 @@ class AABB:
         setattr(self, "Minimum", Descriptor(self.__type))
         setattr(self, "Minimum", minimum)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         returns
             str
         """
         return self.__str__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         returns
             str
         """
         return f"{self.Minimum} {self.Maximum}"
 
-    def expand(self, vector):
+    def expand(self, vector: Vector):
         """
         parameters
             vector
@@ -63,7 +66,7 @@ class AABB:
             ):
                 self.Maximum.set_attribute(attribute, vector.get_attribute(attribute))
 
-    def get_center(self):
+    def get_center(self) -> Vector:
         """
         returns
             Vector
@@ -71,7 +74,7 @@ class AABB:
 
         return self.Minimum + ((self.Maximum - self.Minimum) * 0.5)
 
-    def is_colliding_with_aabb(self, aabb):
+    def is_colliding_with_aabb(self, aabb: "AABB") -> bool:
         """
         parameters
             AABB
@@ -95,7 +98,7 @@ class AABB:
                 return False
         return True
 
-    def is_colliding_with_point(self, point):
+    def is_colliding_with_point(self, point: Vector) -> bool:
         """
         parameters
             Vector
@@ -124,5 +127,5 @@ class AABB3f(AABB):
         Vector3f
     """
 
-    def __init__(self, minimum=Vector3f(), maximum=Vector3f()):
+    def __init__(self, minimum: Vector3f = Vector3f(), maximum: Vector3f = Vector3f()):
         super().__init__(minimum, maximum, Vector3f)

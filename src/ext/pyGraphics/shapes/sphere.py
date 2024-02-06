@@ -11,7 +11,7 @@ from ...pyHelpers.type_validation import type_validation
 from ...pyMultiD.vector import Vector2f, Vector3f
 
 
-def generate_sphere(latitudes, longitudes):
+def generate_sphere(latitudes: int, longitudes: int) -> Shape:
     """
     parameters
         int
