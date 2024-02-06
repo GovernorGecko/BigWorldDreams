@@ -11,12 +11,12 @@ from ..vertex import VertexPositionNormalTexture
 
 
 def generate_box(
-    minimum,
-    maximum,
-    texture_minimums=[Vector2f(0.0, 0.0)] * 6,
-    texture_size=Vector2f(1.0, 1.0),
-    faces_toggle_list=[True, True, True, True, True, True],
-):
+    minimum: Vector3f,
+    maximum: Vector3f,
+    texture_minimums: list[Vector2f] = [Vector2f(0.0, 0.0)] * 6,
+    texture_size: Vector2f = Vector2f(1.0, 1.0),
+    faces_toggle_list: list[bool] = [True, True, True, True, True, True],
+) -> Shape:
     """
     parameters
         Vector3f
@@ -129,7 +129,13 @@ def generate_box(
     return shape
 
 
-def generate_box_from_whd(width, height, depth, texture_minimums, texture_size):
+def generate_box_from_whd(
+    width: float,
+    height: float,
+    depth: float,
+    texture_minimums: list[Vector2f],
+    texture_size: Vector2f,
+) -> Shape:
     """
     parameters
         float

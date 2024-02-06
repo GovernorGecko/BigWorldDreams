@@ -10,7 +10,7 @@ from ...pyHelpers.type_validation import type_validation
 from ...pyMultiD.vector import Vector2f, Vector3f
 
 
-def generate_circle(radius, points):
+def generate_circle(radius: float, points: int) -> Shape:
     """
     parameters
         float

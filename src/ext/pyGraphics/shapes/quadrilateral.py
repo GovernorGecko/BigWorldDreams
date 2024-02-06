@@ -11,21 +11,21 @@ from .triangle import generate_triangle
 
 
 def generate_quadrilateral(
-    top_left,
-    top_right,
-    bottom_right,
-    bottom_left,
-    texture_minimum=Vector2f(0.0, 0.0),
-    texture_size=Vector2f(1.0, 1.0),
+    top_left: Vector3f,
+    top_right: Vector3f,
+    bottom_right: Vector3f,
+    bottom_left: Vector3f,
+    texture_minimum: Vector2f = Vector2f(0.0, 0.0),
+    texture_size: Vector2f = Vector2f(1.0, 1.0),
 ):
     """
     parameters
-        Vector3
-        Vector3
-        Vector3
-        Vector3
-        Vector2
-        Vector2
+        Vector3f
+        Vector3f
+        Vector3f
+        Vector3f
+        Vector2f
+        Vector2f
 
     p1----p2
     |      |
@@ -88,12 +88,12 @@ def generate_quadrilateral(
 
 
 def generate_quadrilateral_static_axis(
-    minimum,
-    size,
-    axis="x",
-    axis_offset=0.0,
-    texture_minimum=Vector2f(0.0, 0.0),
-    texture_size=Vector2f(1.0, 1.0),
+    minimum: Vector2f,
+    size: Vector2f,
+    axis: str = "x",
+    axis_offset: float = 0.0,
+    texture_minimum: Vector2f = Vector2f(0.0, 0.0),
+    texture_size: Vector2f = Vector2f(1.0, 1.0),
 ):
     """
     parameters

@@ -4,9 +4,10 @@ shape.py
 
 from ..pyHelpers.type_validation import type_validation
 from ..pyMultiD.aabb import AABB3f
-from ..pyMultiD.vector import Vector3f
+from ..pyMultiD.vector import Vector, Vector3f
 
 from .vertex import (
+    Vertex,
     VertexPosition,
     VertexPositionNormal,
     VertexPositionNormalTexture,
@@ -14,9 +15,14 @@ from .vertex import (
 
 
 class Shape:
+    """
+    parameters
+        Vertex
+    """
+
     __slots__ = ["__aabb", "__indices", "__type", "__vertices"]
 
-    def __init__(self, type):
+    def __init__(self, type: Vertex):
         allowed_types = (
             VertexPosition,
             VertexPositionNormal,
@@ -31,21 +37,21 @@ class Shape:
         self.__type = type
         self.__vertices = [[] for _ in self.get_order()]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         returns
             string
         """
         return self.__str__()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         returns
             string
         """
         return f"{self.get()}"
 
-    def add(self, value):
+    def add(self, value: "Shape | Vertex"):
         """
         parameters
             Shape or Vertex
@@ -176,7 +182,7 @@ class Shape:
         for indice in indices_to_delete:
             self.delete_indice_at_index(indice)
 
-    def delete_indice_at_index(self, index):
+    def delete_indice_at_index(self, index: int):
         """
         parameters
             int
@@ -217,33 +223,33 @@ class Shape:
         # Delete the indice
         del self.__indices[index]
 
-    def get(self):
+    def get(self) -> list[list[Vector]]:
         """
         returns
-            List[List[Vector]]
+            list[list[Vector]]
         """
         return [self.get_indice_value_by_index(i) for i in range(len(self.__indices))]
 
-    def get_aabb(self):
+    def get_aabb(self) -> AABB3f:
         """
         returns
             AABB
         """
         return self.__aabb
 
-    def get_indices(self):
+    def get_indices(self) -> list[list[int]]:
         """
         returns
-            List[List[int]]
+            list[List[int]]
         """
         return self.__indices
 
-    def get_indice_value_by_index(self, index):
+    def get_indice_value_by_index(self, index: int) -> list[Vector]:
         """
         parameters
             int
         returns
-            List[Vector]
+            list[Vector]
         """
 
         type_validation(index, int)
@@ -253,12 +259,12 @@ class Shape:
 
         return []
 
-    def get_indice_value_by_indice(self, indice):
+    def get_indice_value_by_indice(self, indice: list[int]) -> list[Vector]:
         """
         parameters
-            List[int]
+            list[int]
         returns
-            List[Vector]
+            list[Vector]
         """
 
         if type(indice) != list or not all(isinstance(i, int) for i in indice):
@@ -273,17 +279,17 @@ class Shape:
             self.get_vertex_by_indices_index(v, indice[v]) for v in range(len(indice))
         ]
 
-    def get_indices(self):
+    def get_indices(self) -> list[list[int]]:
         """
         return
-            List[List[int]]
+            list[list[int]]
         """
         return self.__indices
 
-    def get_order(self):
+    def get_order(self) -> list[str]:
         """
         return
-            List[string]
+            list[str]
 
             Important for Rotate/Scale/Transition/ObjFile
             CHANGEME
@@ -301,12 +307,12 @@ class Shape:
 
         return []
 
-    def get_vertex_by_index(self, v):
+    def get_vertex_by_index(self, v: int) -> list[Vector]:
         """
         parameters
             int
         returns
-            List[Vector]
+            list[Vector]
         """
 
         type_validation(v, int)
@@ -316,7 +322,7 @@ class Shape:
 
         return []
 
-    def get_vertex_by_indices_index(self, v, i):
+    def get_vertex_by_indices_index(self, v: int, i: int) -> Vector:
         """
         parameters
             int
@@ -333,14 +339,14 @@ class Shape:
 
         return []
 
-    def get_vertices(self):
+    def get_vertices(self) -> list[list[Vector]]:
         """
         return
-            List[List[Vector]]
+            list[list[Vector]]
         """
         return self.__vertices
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         """
         returns
             bool
@@ -348,7 +354,7 @@ class Shape:
 
         return len(self.__indices) > 0 and len(self.__indices) % 3 == 0
 
-    def rotate(self, roll, pitch, yaw):
+    def rotate(self, roll: float, pitch: float, yaw: float) -> "Shape":
         """
         parameters
             float
@@ -372,7 +378,7 @@ class Shape:
         for v in self.__vertices[vp_index]:
             v.rotate(roll, pitch, yaw)
 
-    def scale(self, scale):
+    def scale(self, scale: float) -> "Shape":
         """
         parameters
             float
@@ -391,7 +397,7 @@ class Shape:
         for v in self.__vertices[vp_index]:
             v.scale(scale)
 
-    def translate(self, translation):
+    def translate(self, translation: Vector3f) -> "Shape":
         """
         parameters
             Vector3f

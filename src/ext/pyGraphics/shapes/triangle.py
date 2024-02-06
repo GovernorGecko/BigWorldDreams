@@ -6,10 +6,15 @@ from ...pyHelpers.type_validation import type_validation
 from ...pyMultiD.vector import Vector3f
 
 from ..shape import Shape
-from ..vertex import VertexPosition, VertexPositionNormal, VertexPositionNormalTexture
+from ..vertex import (
+    Vertex,
+    VertexPosition,
+    VertexPositionNormal,
+    VertexPositionNormalTexture,
+)
 
 
-def generate_triangle(vertex1, vertex2, vertex3):
+def generate_triangle(vertex1: Vertex, vertex2: Vertex, vertex3: Vertex):
     """
     parameters
         Vertex
