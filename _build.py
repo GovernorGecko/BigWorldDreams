@@ -11,28 +11,27 @@ from src.core.shapes.heightmap import (
     get_slice_from_heightmap,
 )
 
-from src.ext.pyMultiD.aabb import AABB3f
-
-aabb = AABB3f(Vector3f(0.0, 0.0, 0.0), Vector2f(0.0, 0.0))
-
 # create_or_delete("./results")
 
+"""
 
-# human = generate_human()
-# human.set_root(human.get("head_human_large"))
+    human = generate_human()
+    human.set_root(human.get("head_human_large"))
+    
+    human.create_frame("idle1")
+    
+    human.export("chrono_animations", path="./Content/Objects")
 
-
-# human.create_frame("idle1")
-
-# human.export("chrono_animations", path="../aDream/Content/Objects")
-
-# objfile(
-#    human.get("head_human_large").render(Vector2f(0.0, 0.0), False),
-#    "c",
-#    path="./results",
-# )
+    objfile(
+        human.get("head_human_large").render(Vector2f(0.0, 0.0), False),
+        "c",
+        path="./results",
+    )
 
 """
+
+"""
+
 heightmap_json = generate_heightmap_json(20, 20)
 
 heightmap = generate_heightmap(
@@ -45,19 +44,17 @@ heightmap.center_on_origin()
 objfile(
     heightmap,
     "heightmap_0",
-    path="../aDream/Content/Models",
+    path="./Content/Models",
 )
 
 sliced = get_slice_from_heightmap(heightmap_json, 1)
 
 max_min = get_max_and_min_from_list(sliced)
 
-print(max_min)
-print(len(sliced))
-print(sliced)
 """
 
 """
+
 # BOXES
 boxes = generate_boxes(
     2,
@@ -79,8 +76,8 @@ objfile(
     "heightmap_0",
     path="./results",
 )
-"""
 
+"""
 
 """
 # ATLAS
