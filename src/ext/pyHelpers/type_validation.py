@@ -23,17 +23,19 @@ def type_validation(vars, types):
 
     def __comparitor(v, t):
         if not isinstance(v, t):
-            raise ValueError(f"{type(v)} must be of type {t}")
+            raise ValueError(f"{type(v)} must be of type {t}.  Variable was {v}.")
 
     # Two Lists Passed in
     if isinstance(vars, list) and isinstance(types, list):
-        if len(vars) != len(types):
-            raise ValueError(
-                "Type Validation requires vars and types to be the same length."
-            )
-        else:
+        if len(vars) <= len(types):
             for i in range(len(vars)):
                 type_validation(vars[i], types[i])
+        else:
+            for i in range(len(vars)):
+                if i < len(types):
+                    type_validation(vars[i], types[i])
+                else:
+                    type_validation(vars[i], types[len(types) - 1])
 
     # Vars is a list, Types is not
     elif isinstance(vars, list):

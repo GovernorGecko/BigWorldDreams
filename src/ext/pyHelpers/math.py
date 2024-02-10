@@ -46,8 +46,8 @@ def dot_of_lists(
 
 
 def get_max_and_min_from_list(
-    a_list: list[int / float],
-) -> tuple(int | float, int | float):
+    a_list: list[int | float],
+) -> "tuple(int | float, int | float)":
     """
     parameters
         list[int/float]
