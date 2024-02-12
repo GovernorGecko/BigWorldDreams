@@ -7,11 +7,13 @@ from src.core.characters.complex.human import generate_human
 from src.core.shapes.boxes import generate_boxes
 from src.core.shapes.heightmap import (
     generate_heightmap,
+    generate_blocked_heightmap,
     generate_heightmap_json,
     get_slice_from_heightmap,
 )
 
 # create_or_delete("./results")
+
 
 """
 

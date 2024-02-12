@@ -29,11 +29,18 @@ def generate_heightmap(
     """
     parameters
         { name, width, length, heights }
+        (optional)
+            Vector2f
+            Vector2f
+            Vector2f
     returns
         Shape
     """
 
-    type_validation(json, object)
+    type_validation(
+        [json, texture_minimum_side, texture_minimum_top, texture_size],
+        [object, Vector2f, Vector2f, Vector2f],
+    )
 
     if "heights" not in json or "length" not in json or "width" not in json:
         raise ValueError("JSON file doesn't contain needed fields.")
@@ -191,17 +198,31 @@ def generate_heightmap(
     return shape
 
 
+def generate_blocked_heightmap(data: list) -> Shape:
+    """
+    parameter
+        list[int]
+    return
+        Shape
+    """
+
+    type_validation(data, [int])
+
+
 def generate_heightmap_json(width, length, octaves=10, seed=1, name="test"):
     """
     parameters
         int
         int
-        str
+        (optional)
+            int
+            int
+            str
     returns
         json
     """
 
-    type_validation([width, length], int)
+    type_validation([width, length, octaves, seed, name], [int, int, int, int, str])
 
     # Generate our Noise
     noise = PerlinNoise(octaves=octaves, seed=seed)
