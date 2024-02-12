@@ -17,7 +17,7 @@ def generate_quadrilateral(
     bottom_left: Vector3f,
     texture_minimum: Vector2f = Vector2f(0.0, 0.0),
     texture_size: Vector2f = Vector2f(1.0, 1.0),
-):
+) -> Shape:
     """
     parameters
         Vector3f
@@ -94,7 +94,7 @@ def generate_quadrilateral_static_axis(
     axis_offset: float = 0.0,
     texture_minimum: Vector2f = Vector2f(0.0, 0.0),
     texture_size: Vector2f = Vector2f(1.0, 1.0),
-):
+) -> Shape:
     """
     parameters
         Vector2f
